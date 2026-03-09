@@ -1,0 +1,27 @@
+@model AlqoMishi.Entidades.Empleado
+
+<h2>Editar veterinario</h2>
+
+<form method="post">
+
+<input type="hidden" asp-for="Id"/>
+
+<div class="mb-3">
+<label>Especialidad</label>
+<input class="form-control" asp-for="Especialidad"/>
+</div>
+
+<div class="mb-3 form-check">
+
+<input class="form-check-input" asp-for="EstaDisponible"/>
+<label class="form-check-label">
+Disponible
+</label>
+
+</div>
+
+<button class="btn btn-success">
+Guardar cambios
+</button>
+
+</form>

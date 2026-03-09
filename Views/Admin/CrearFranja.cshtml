@@ -1,0 +1,49 @@
+@model AlqoMishi.ViewModels.CrearFranjaViewModel
+
+<h2>Nueva franja</h2>
+
+<form method="post">
+
+<div class="mb-3">
+<label>Nombre</label>
+<input class="form-control" asp-for="Nombre"/>
+</div>
+
+<div class="mb-3">
+<label>Fecha</label>
+<input type="date" class="form-control" asp-for="Fecha"/>
+</div>
+
+<div class="mb-3">
+<label>Hora inicio</label>
+<input type="time" class="form-control" asp-for="HoraInicio"/>
+</div>
+
+<div class="mb-3">
+<label>Hora fin</label>
+<input type="time" class="form-control" asp-for="HoraFin"/>
+</div>
+
+<div class="mb-3">
+<label>Capacidad</label>
+<input class="form-control" asp-for="Capacidad"/>
+</div>
+
+<div class="mb-3">
+<label>Precio</label>
+<input class="form-control" asp-for="Precio"/>
+</div>
+
+<div class="mb-3">
+<label>Veterinario</label>
+
+<select class="form-control" asp-for="EmpleadoId" asp-items="Model.Empleados">
+</select>
+
+</div>
+
+<button class="btn btn-success">
+Crear franja
+</button>
+
+</form>

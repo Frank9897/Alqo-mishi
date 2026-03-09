@@ -1,0 +1,36 @@
+@model AlqoMishi.Entidades.Mascota
+
+<h2>Registrar mascota</h2>
+
+<form asp-action="Crear">
+
+<div class="mb-3">
+<label>Nombre</label>
+<input asp-for="Nombre" class="form-control"/>
+</div>
+
+<div class="mb-3">
+<label>Especie</label>
+<input asp-for="Especie" class="form-control"/>
+</div>
+
+<div class="mb-3">
+<label>Raza</label>
+<input asp-for="Raza" class="form-control"/>
+</div>
+
+<div class="mb-3">
+<label>Edad</label>
+<input asp-for="Edad" class="form-control"/>
+</div>
+
+<div class="mb-3">
+<label>Sexo</label>
+<input asp-for="Sexo" class="form-control"/>
+</div>
+
+<button class="btn btn-success">
+Guardar
+</button>
+
+</form>

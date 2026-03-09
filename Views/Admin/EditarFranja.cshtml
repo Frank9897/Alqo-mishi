@@ -1,0 +1,43 @@
+@model AlqoMishi.Entidades.Franja
+
+<h2>Editar franja</h2>
+
+<form method="post">
+
+<input type="hidden" asp-for="Id" />
+
+<div class="mb-3">
+<label>Nombre</label>
+<input class="form-control" asp-for="Nombre"/>
+</div>
+
+<div class="mb-3">
+<label>Fecha</label>
+<input type="date" class="form-control" asp-for="Fecha"/>
+</div>
+
+<div class="mb-3">
+<label>Hora inicio</label>
+<input type="time" class="form-control" asp-for="HoraInicio"/>
+</div>
+
+<div class="mb-3">
+<label>Hora fin</label>
+<input type="time" class="form-control" asp-for="HoraFin"/>
+</div>
+
+<div class="mb-3">
+<label>Capacidad</label>
+<input class="form-control" asp-for="Capacidad"/>
+</div>
+
+<div class="mb-3">
+<label>Precio</label>
+<input class="form-control" asp-for="Precio"/>
+</div>
+
+<button class="btn btn-success">
+Guardar cambios
+</button>
+
+</form>
