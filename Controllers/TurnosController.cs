@@ -31,37 +31,32 @@ public class TurnosController : Controller
     {
         var franjas = await _context.Franjas
             .Include(f => f.Turnos)
-            .Include(f => f.Empleado)
-            .ThenInclude(e => e.Usuario)        
             .ToListAsync();
 
         var eventos = franjas.Select(f =>
         {
             var ocupados = f.Turnos.Count(t => t.Estado != "Cancelado");
 
-            var veterinario = f.Empleado?.Usuario?.Nombre + " " +
-                            f.Empleado?.Usuario?.Apellido;
+            var disponibles = f.Capacidad - ocupados;
 
-            var titulo =
-                $"Consulta veterinaria\n" +
-                $"{veterinario}\n" +
-                $"{ocupados}/{f.Capacidad} cupos\n" +
-                $"${f.Precio:N0}";
+            string titulo;
 
-            var color = "#198754";
-
-            if (ocupados >= f.Capacidad)
-                color = "#dc3545";
-            else if (ocupados >= f.Capacidad - 1)
-                color = "#ffc107";
+            if (disponibles <= 0)
+            {
+                titulo = $"🔴 COMPLETO\n{f.Nombre}";
+            }
+            else
+            {
+                titulo = $"{f.Nombre}\n🟢 {disponibles}/{f.Capacidad} cupos\n${f.Precio}";
+            }
 
             return new
             {
                 id = f.Id,
                 title = titulo,
-                start = f.Fecha.Date + f.HoraInicio,
-                end = f.Fecha.Date + f.HoraFin,
-                color = color
+                start = f.Fecha.Add(f.HoraInicio),
+                end = f.Fecha.Add(f.HoraFin),
+                color = disponibles <= 0 ? "#dc3545" : "#198754"
             };
         });
 
