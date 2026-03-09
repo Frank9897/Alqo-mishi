@@ -1,0 +1,51 @@
+@model IEnumerable<AlqoMishi.Entidades.Mascota>
+
+<h2>Mis mascotas</h2>
+
+<a class="btn btn-primary mb-3" asp-action="Crear">Registrar mascota</a>
+
+<table class="table table-striped">
+
+<thead>
+<tr>
+<th>Nombre</th>
+<th>Especie</th>
+<th>Raza</th>
+<th>Edad</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+
+@foreach(var mascota in Model)
+{
+<tr>
+
+<td>@mascota.Nombre</td>
+<td>@mascota.Especie</td>
+<td>@mascota.Raza</td>
+<td>@mascota.Edad</td>
+
+<td>
+
+<a class="btn btn-warning btn-sm"
+asp-action="Editar"
+asp-route-id="@mascota.Id">
+Editar
+</a>
+
+<a class="btn btn-danger btn-sm"
+asp-action="Eliminar"
+asp-route-id="@mascota.Id">
+Eliminar
+</a>
+
+</td>
+
+</tr>
+}
+
+</tbody>
+
+</table>

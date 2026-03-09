@@ -1,0 +1,61 @@
+@model IEnumerable<AlqoMishi.ViewModels.TurnoAdminViewModel>
+
+<h2>Historial de turnos</h2>
+
+<table class="table table-striped">
+
+<thead>
+<tr>
+<th>Mascota</th>
+<th>Cliente</th>
+<th>Veterinario</th>
+<th>Fecha</th>
+<th>Hora</th>
+<th>Estado</th>
+<th>Precio</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+
+@foreach(var turno in Model)
+{
+<tr>
+
+<td>@turno.Mascota</td>
+
+<td>@turno.Cliente</td>
+
+<td>@turno.Veterinario</td>
+
+<td>@turno.Fecha.ToShortDateString()</td>
+
+<td>@turno.HoraInicio</td>
+
+<td>@turno.Estado</td>
+
+<td>$@turno.Precio</td>
+
+<td>
+
+<a class="btn btn-success btn-sm"
+asp-action="MarcarAtendido"
+asp-route-id="@turno.Id">
+Atendido
+</a>
+
+<a class="btn btn-danger btn-sm"
+asp-action="CancelarTurno"
+asp-route-id="@turno.Id">
+Cancelar
+</a>
+
+</td>
+
+</tr>
+}
+
+</tbody>
+
+</table>

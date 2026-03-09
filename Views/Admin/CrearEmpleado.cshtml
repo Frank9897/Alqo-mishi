@@ -1,0 +1,38 @@
+@model AlqoMishi.ViewModels.CrearEmpleadoViewModel
+
+<h2>Nuevo veterinario</h2>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form method="post">
+
+<div class="mb-3">
+<label>Nombre</label>
+<input class="form-control" asp-for="Nombre"/>
+</div>
+
+<div class="mb-3">
+<label>Apellido</label>
+<input class="form-control" asp-for="Apellido"/>
+</div>
+
+<div class="mb-3">
+<label>Email</label>
+<input class="form-control" asp-for="Email"/>
+</div>
+
+<div class="mb-3">
+<label>Contraseña</label>
+<input type="password" class="form-control" asp-for="Password"/>
+</div>
+
+<div class="mb-3">
+<label>Especialidad</label>
+<input class="form-control" asp-for="Especialidad"/>
+</div>
+
+<button class="btn btn-success">
+Crear veterinario
+</button>
+
+</form>

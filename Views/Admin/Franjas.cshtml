@@ -1,0 +1,50 @@
+@model List<AlqoMishi.Entidades.Franja>
+
+<h2>Administración de Franjas</h2>
+
+<a class="btn btn-primary mb-3" href="/Admin/CrearFranja">
+    Nueva franja
+</a>
+
+<table class="table table-bordered table-hover">
+
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th>Capacidad</th>
+            <th>Precio</th>
+            <th>Veterinario</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach(var franja in Model)
+        {
+            <tr>
+                <td>@franja.Fecha.ToShortDateString()</td>
+                <td>@franja.HoraInicio.ToString(@"hh\:mm")</td>
+                <td>@franja.HoraFin.ToString(@"hh\:mm")</td>
+                <td>@franja.Capacidad</td>
+                <td>$ @franja.Precio.ToString("N0")</td>
+                <td>@franja.Empleado?.Usuario?.Nombre @franja.Empleado?.Usuario?.Apellido</td>
+                <td>
+                <a class="btn btn-sm btn-warning"
+                href="/Admin/EditarFranja/@franja.Id">
+                Editar
+                </a>
+
+                <a class="btn btn-sm btn-danger"
+                href="/Admin/EliminarFranja/@franja.Id">
+                Eliminar
+                </a>
+            </td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>
