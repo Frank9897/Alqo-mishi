@@ -1,176 +1,217 @@
+@{
+    Layout = "_Layout";
+}
+
 <h2 class="mb-4">Sistema de Turnos - ALQO MISHI</h2>
 
 <div class="container-fluid">
     <div id="calendario"></div>
 </div>
+
+<!-- Modal Reserva -->
 <div class="modal fade" id="modalReserva" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
 
-            <div class="modal-header">
-                <h5 class="modal-title">Reservar turno</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
+    <p><strong>Inicio:</strong> <span id="horaInicio"></span></p>
+    <p><strong>Fin:</strong> <span id="horaFin"></span></p>
 
-            <div class="modal-body">
+        <div id="zonaLogueado">
 
-                <p><strong>Inicio:</strong> <span id="horaInicio"></span></p>
-                <p><strong>Fin:</strong> <span id="horaFin"></span></p>
+        <label>Mascota</label>
 
-                <div class="mb-3">
-                    <label>Mascota</label>
-                    <select id="mascotaId" class="form-control">
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Observaciones</label>
-                    <textarea class="form-control" id="observaciones"></textarea>
-                </div>
-
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-primary" id="btnConfirmar">
-                    Confirmar reserva
-                </button>
-            </div>
+            <select id="mascotaId" class="form-control"></select>
 
         </div>
-    </div>
-</div>
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet">
 
+        <div id="zonaAnonimo">
+
+        <div class="mb-3">
+            <label>Nombre del dueño</label>
+            <input type="text" class="form-control" id="nombreCliente">
+        </div>
+
+        <div class="mb-3">
+            <label>Teléfono</label>
+            <input type="text" class="form-control" id="telefono">
+        </div>
+
+        <div class="mb-3">
+            <label>Mascota</label>
+            <input type="text" class="form-control" id="mascota">
+        </div>
+
+        <div class="mb-3">
+            <label>Especie</label>
+            <input type="text" class="form-control" id="especie">
+        </div>
+
+        </div>
+
+        <div class="mb-3">
+            <label>Observaciones</label>
+            <textarea class="form-control" id="observaciones"></textarea>
+        </div>
+
+</div>
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/es.global.min.js"></script>
 
+<style>
+    #calendario { max-width: 100%; margin: auto; }
+    @@media (max-width: 768px) {
+        .fc-toolbar { flex-direction: column; gap: 10px; }
+        .fc-toolbar-title { font-size: 18px; text-align: center; }
+        .fc-button { font-size: 12px; padding: 5px 8px; }
+    }
+</style>
+
 <script>
-
-
-document.addEventListener('DOMContentLoaded', function () {
-       
-    let franjaSeleccionada = null;
-
-    var calendarioEl = document.getElementById('calendario');
-
-    var calendario = new FullCalendar.Calendar(calendarioEl, {
-
-        locale: 'es',
-
-        slotMinTime: "08:00:00",
-        slotMaxTime: "20:00:00",
-
-        initialView: 'dayGridMonth',
-
-        height: "auto",
-
-        events: '/Turnos/ObtenerFranjas',
-
-        allDayText: 'Todo el día',
-
-        buttonText: {
-            today: 'Hoy',
-            month: 'Mes',
-            week: 'Semana',
-            day: 'Día'
-        },
-
-        headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
-
-        eventDidMount: function(info) {
-
-            info.el.querySelector(".fc-event-title")
-                .innerHTML = info.event.title.replace(/\n/g, "<br>");
-
-        },
-
-        eventClick: function(info) {
-
-            if(info.event.title.includes("COMPLETO")){
-                alert("Esta franja ya no tiene cupos disponibles");
+    let usuarioLogueado = @User.Identity.IsAuthenticated.ToString().ToLower();
+    // cargar mascotas del usuario y llenar select
+    async function cargarMascotas() {
+        try {
+            const resp = await fetch('/api/mascotas');
+            if (!resp.ok) {
+                // si NO está logueado o no hay mascotas
+                document.getElementById('mascotaId').innerHTML = '<option value="">(Inicia sesión / registra mascota)</option>';
                 return;
             }
-
-            franjaSeleccionada = info.event.id;
-
-            let inicio = info.event.start.toLocaleTimeString();
-            let fin = info.event.end.toLocaleTimeString();
-
-            document.getElementById("horaInicio").innerText = inicio;
-            document.getElementById("horaFin").innerText = fin;
-
-            let modal = new bootstrap.Modal(
-                document.getElementById('modalReserva')
-            );
-
-            modal.show();
-            cargarMascotas();
-
+            const mascotas = await resp.json();
+            let select = document.getElementById('mascotaId');
+            select.innerHTML = '';
+            if (mascotas.length === 0) {
+                select.innerHTML = '<option value="">(No tienes mascotas registradas)</option>';
+                return;
+            }
+            mascotas.forEach(m => {
+                let option = document.createElement('option');
+                option.value = m.id;
+                option.text = m.nombre;
+                select.appendChild(option);
+            });
+        } catch (err) {
+            console.error(err);
         }
-
-
-    });
-
-    calendario.render();
-
-
-    async function cargarMascotas(){
-
-        const response = await fetch("/api/mascotas");
-
-        const mascotas = await response.json();
-
-        let select = document.getElementById("mascotaId");
-
-        select.innerHTML = "";
-
-        mascotas.forEach(m => {
-
-            let option = document.createElement("option");
-
-            option.value = m.id;
-
-            option.text = m.nombre;
-
-            select.appendChild(option);
-
-        });
-
     }
 
-    document.getElementById("btnConfirmar")
-.addEventListener("click", async function(){
+    document.addEventListener('DOMContentLoaded', function () {
 
-    let mascotaId = document.getElementById("mascotaId").value;
-    let observaciones = document.getElementById("observaciones").value;
+        if(usuarioLogueado){
 
-    await fetch("/Turnos/ReservarTurno", {
+            document.getElementById("zonaAnonimo").style.display = "none";
 
-        method: "POST",
+            cargarMascotas();
 
-        headers: {
-            "Content-Type": "application/json"
-        },
+        }else{
 
-        body: JSON.stringify({
-        franjaId: franjaSeleccionada,
-        mascotaId: mascotaId,
-        observaciones: observaciones
-    })
+            document.getElementById("zonaLogueado").style.display = "none";
+
+        }
+        var calendarioEl = document.getElementById('calendario');
+
+        var calendario = new FullCalendar.Calendar(calendarioEl, {
+            locale: 'es',
+            slotMinTime: "08:00:00",
+            slotMaxTime: "20:00:00",
+            initialView: 'dayGridMonth',
+            height: "auto",
+
+            // cargamos eventos con función para poder mapear
+            events: async function(fetchInfo, successCallback) {
+                const r = await fetch('/Turnos/ObtenerFranjas');
+                const data = await r.json();
+                const eventos = data.map(f => {
+                    let ocupados = f.title && f.title.match(/\d+\/\d+/); // fallback
+                    // construimos título legible (server ya arma multilinea)
+                    return {
+                        id: f.id,
+                        title: f.title,
+                        start: f.start,
+                        end: f.end,
+                        color: f.color
+                    };
+                });
+                successCallback(eventos);
+            },
+
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+
+            eventDidMount: function(info) {
+                // permite saltos de linea en el title
+                const titleEl = info.el.querySelector(".fc-event-title");
+                if (titleEl) titleEl.innerHTML = info.event.title.replace(/\n/g, "<br>");
+            },
+
+            eventClick: function(info) {
+                // bloquear reservar si está completo (title contiene COMPLETO o color rojo)
+                if (info.event.title && info.event.title.includes("COMPLETO")) {
+                    alert("Este turno está completo");
+                    return;
+                }
+
+                franjaSeleccionada = info.event.id;
+
+                let inicio = info.event.start ? new Date(info.event.start).toLocaleTimeString() : '';
+                let fin = info.event.end ? new Date(info.event.end).toLocaleTimeString() : '';
+
+                document.getElementById("horaInicio").innerText = inicio;
+                document.getElementById("horaFin").innerText = fin;
+
+                let modal = new bootstrap.Modal(document.getElementById('modalReserva'));
+                modal.show();
+
+                // llenar select con mascotas del usuario
+                cargarMascotas();
+            }
+        });
+
+        calendario.render();
+
+        // confirmar reserva
+        document.getElementById("btnConfirmar").addEventListener("click", async function () {
+
+        let mascotaId = document.getElementById("mascotaId")?.value;
+
+        const payload = {
+
+            franjaId: franjaSeleccionada,
+
+            mascotaId: usuarioLogueado
+                ? parseInt(mascotaId)
+                : null,
+
+            nombreCliente: document.getElementById("nombreCliente")?.value,
+
+            telefono: document.getElementById("telefono")?.value,
+
+            mascota: document.getElementById("mascota")?.value,
+
+            especie: document.getElementById("especie")?.value,
+
+            observaciones: document.getElementById("observaciones")?.value
+
+        };
+
+        const res = await fetch("/Turnos/ReservarTurno", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            alert("Turno reservado correctamente");
+            location.reload();
+        } else {
+            const text = await res.text();
+            alert("Error: " + text);
+        }
 
     });
 
-    alert("Turno reservado correctamente");
-
-    location.reload();
-
-});     
-    
-});
-
-
-</script>
+    });
+</script>   

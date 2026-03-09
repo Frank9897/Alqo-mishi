@@ -71,29 +71,64 @@ public class TurnosController : Controller
     [HttpPost]
     public async Task<IActionResult> ReservarTurno([FromBody] ReservaTurnoDto dto)
     {
-        var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        var mascota = await _turnoServicio.CrearMascotaAsync(
-            dto.Mascota,
-            dto.Especie,
-            dto.Raza,
-            dto.Observaciones,
-            usuarioId
+        int usuarioId;
+
+        if (User.Identity.IsAuthenticated)
+        {
+            usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        }
+        else
+        {
+            // crear usuario temporal
+            var usuario = new Usuario
+            {
+                UserName = dto.Telefono,
+                PhoneNumber = dto.Telefono,
+                Nombre = dto.NombreCliente,
+                RolSistema = "ClienteAnonimo"
+            };
+
+            var result = await _userManager.CreateAsync(usuario);
+
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            usuarioId = usuario.Id;
+        }
+
+        int mascotaId;
+
+        if (dto.MascotaId.HasValue)
+        {
+            mascotaId = dto.MascotaId.Value;
+        }
+        else
+        {
+            var mascota = await _turnoServicio.CrearMascotaAsync(
+                dto.Mascota,
+                dto.Especie,
+                dto.Raza,
+                dto.Observaciones,
+                usuarioId
             );
+
+            mascotaId = mascota.Id;
+        }
 
         var franja = await _turnoServicio.ObtenerFranjaAsync(dto.FranjaId);
 
         if (franja == null)
-            return BadRequest();
+            return BadRequest("Franja inválida");
 
         var turnoCreado = await _turnoServicio.CrearTurnoAsync(
-            mascota.Id,
-            0,
+            mascotaId,
+            usuarioId,
             franja.Id,
             dto.Observaciones
         );
 
         if (!turnoCreado)
-            return BadRequest("No hay cupos disponibles");
+            return BadRequest("No hay cupos");
 
         return Ok();
     }

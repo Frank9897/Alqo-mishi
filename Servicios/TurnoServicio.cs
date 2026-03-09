@@ -13,28 +13,21 @@ public class TurnoServicio
         _context = context;
     }
 
-    public async Task<Mascota> CrearMascotaAsync(
-    string nombre,
-    string especie,
-    string raza,
-    string observaciones,
-    int propietarioId)
-{
-    var mascota = new Mascota
+    public async Task<Mascota> CrearMascotaAsync(string nombre, string especie, string raza, string observaciones, int propietarioId)
     {
-        Nombre = nombre,
-        Especie = especie,
-        Raza = raza,
-        Notas = observaciones,
-        PropietarioId = propietarioId
-    };
+        var mascota = new Mascota
+        {
+            Nombre = nombre,
+            Especie = especie,
+            Raza = raza,
+            Notas = observaciones,
+            PropietarioId = propietarioId
+        };
 
-    _context.Mascotas.Add(mascota);
-
-    await _context.SaveChangesAsync();
-
-    return mascota;
-}
+        _context.Mascotas.Add(mascota);
+        await _context.SaveChangesAsync();
+        return mascota;
+    }
 
     public async Task<Franja?> ObtenerFranjaAsync(int franjaId)
     {
@@ -43,23 +36,13 @@ public class TurnoServicio
             .FirstOrDefaultAsync(f => f.Id == franjaId);
     }
 
-    public async Task<bool> CrearTurnoAsync(
-        int mascotaId,
-        int clienteId,
-        int franjaId,
-        string observaciones)
+    public async Task<bool> CrearTurnoAsync(int mascotaId, int clienteId, int franjaId, string observaciones)
     {
-        var franja = await _context.Franjas
-            .Include(f => f.Turnos)
-            .FirstOrDefaultAsync(f => f.Id == franjaId);
-
-        if (franja == null)
-            return false;
+        var franja = await ObtenerFranjaAsync(franjaId);
+        if (franja == null) return false;
 
         var turnosOcupados = franja.Turnos.Count(t => t.Estado != "Cancelado");
-
-        if (turnosOcupados >= franja.Capacidad)
-            return false;
+        if (turnosOcupados >= franja.Capacidad) return false;
 
         var turno = new Turno
         {
@@ -72,9 +55,7 @@ public class TurnoServicio
         };
 
         _context.Turnos.Add(turno);
-
         await _context.SaveChangesAsync();
-
         return true;
     }
 }
