@@ -5,9 +5,11 @@ using AlqoMishi.Datos;
 using AlqoMishi.Entidades;
 using AlqoMishi.ViewModels;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AlqoMishi.Controllers;
 
+[Authorize]
 public class TurnosController : Controller
 {
     private readonly TurnoServicio _turnoServicio;

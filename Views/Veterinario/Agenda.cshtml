@@ -1,0 +1,57 @@
+@model List<AlqoMishi.Entidades.Turno>
+
+<h2>Agenda del día</h2>
+
+<table class="table table-striped">
+
+<thead>
+
+<tr>
+
+<th>Hora</th>
+<th>Mascota</th>
+<th>Dueño</th>
+<th>Acción</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+@foreach(var turno in Model)
+{
+<tr>
+
+<td>
+@turno.Franja.HoraInicio.ToString(@"hh\:mm")
+</td>
+
+<td>
+@turno.Mascota.Nombre
+(@turno.Mascota.Especie)
+</td>
+
+<td>
+@turno.Cliente.Nombre
+</td>
+
+<td>
+
+<a class="btn btn-primary btn-sm"
+asp-controller="Turnos"
+asp-action="Detalle"
+asp-route-id="@turno.Id">
+
+Abrir
+
+</a>
+
+</td>
+
+</tr>
+}
+
+</tbody>
+
+</table>    

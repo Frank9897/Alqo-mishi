@@ -154,7 +154,9 @@ public class AdminController : Controller
 
     public async Task<IActionResult> Empleados()
     {
-        var empleados = await _context.Empleados.ToListAsync();
+        var empleados = await _context.Empleados
+            .Include(e => e.Usuario)
+            .ToListAsync();
 
         return View(empleados);
     }
@@ -163,22 +165,46 @@ public class AdminController : Controller
 
     public async Task<IActionResult> EditarEmpleado(int id)
     {
-        var empleado = await _context.Empleados.FindAsync(id);
+        var empleado = await _context.Empleados
+            .Include(e => e.Usuario)
+            .FirstOrDefaultAsync(e => e.Id == id);
 
         if (empleado == null)
             return NotFound();
 
-        return View(empleado);
+        var vm = new EditarEmpleadoViewModel
+        {
+            Id = empleado.Id,
+            Nombre = empleado.Usuario.Nombre,
+            Apellido = empleado.Usuario.Apellido,
+            Email = empleado.Usuario.Email,
+            Especialidad = empleado.Especialidad,
+            EstaDisponible = empleado.EstaDisponible
+        };
+
+        return View(vm);
     }
 
     [HttpPost]
-    public async Task<IActionResult> EditarEmpleado(int id, Empleado model)
+    public async Task<IActionResult> EditarEmpleado(EditarEmpleadoViewModel model)
     {
-        var empleado = await _context.Empleados.FindAsync(id);
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var empleado = await _context.Empleados
+            .Include(e => e.Usuario)
+            .FirstOrDefaultAsync(e => e.Id == model.Id);
 
         if (empleado == null)
             return NotFound();
 
+        // actualizar datos usuario
+        empleado.Usuario.Nombre = model.Nombre;
+        empleado.Usuario.Apellido = model.Apellido;
+        empleado.Usuario.Email = model.Email;
+        empleado.Usuario.UserName = model.Email;
+
+        // actualizar datos empleado
         empleado.Especialidad = model.Especialidad;
         empleado.EstaDisponible = model.EstaDisponible;
 

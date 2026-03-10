@@ -10,6 +10,8 @@
 
 <thead>
 <tr>
+<th>Veterinario</th>
+<th>Email</th>
 <th>Especialidad</th>
 <th>Disponible</th>
 <th>Acciones</th>
@@ -22,7 +24,17 @@
 {
 <tr>
 
-<td>@emp.Especialidad</td>
+<td>
+@emp.Usuario.Nombre @emp.Usuario.Apellido
+</td>
+
+<td>
+@emp.Usuario.Email
+</td>
+
+<td>
+@emp.Especialidad
+</td>
 
 <td>
 @if(emp.EstaDisponible)
@@ -31,22 +43,13 @@
 }
 else
 {
-<span class="badge bg-danger">No disponible</span>
+<span class="badge bg-secondary">No disponible</span>
 }
 </td>
 
 <td>
-
-<a class="btn btn-sm btn-warning"
-href="/Admin/EditarEmpleado/@emp.Id">
-Editar
-</a>
-
-<a class="btn btn-sm btn-danger"
-href="/Admin/EliminarEmpleado/@emp.Id">
-Eliminar
-</a>
-
+<a class="btn btn-warning btn-sm" asp-action="EditarEmpleado" asp-route-id="@emp.Id">Editar</a>
+<a class="btn btn-danger btn-sm" asp-action="EliminarEmpleado" asp-route-id="@emp.Id">Eliminar</a>
 </td>
 
 </tr>

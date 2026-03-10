@@ -1,27 +1,40 @@
-@model AlqoMishi.Entidades.Empleado
+@model AlqoMishi.ViewModels.EditarEmpleadoViewModel
 
-<h2>Editar veterinario</h2>
+<h2>Editar Veterinario</h2>
 
-<form method="post">
+<form asp-action="EditarEmpleado">
 
 <input type="hidden" asp-for="Id"/>
 
 <div class="mb-3">
+<label>Nombre</label>
+<input asp-for="Nombre" class="form-control"/>
+</div>
+
+<div class="mb-3">
+<label>Apellido</label>
+<input asp-for="Apellido" class="form-control"/>
+</div>
+
+<div class="mb-3">
+<label>Email</label>
+<input asp-for="Email" class="form-control"/>
+</div>
+
+<div class="mb-3">
 <label>Especialidad</label>
-<input class="form-control" asp-for="Especialidad"/>
+<input asp-for="Especialidad" class="form-control"/>
 </div>
 
-<div class="mb-3 form-check">
-
-<input class="form-check-input" asp-for="EstaDisponible"/>
-<label class="form-check-label">
-Disponible
-</label>
-
+<div class="form-check mb-3">
+<input asp-for="EstaDisponible" class="form-check-input"/>
+<label class="form-check-label">Disponible</label>
 </div>
 
-<button class="btn btn-success">
-Guardar cambios
-</button>
+<button class="btn btn-primary">Guardar cambios</button>
+
+<a asp-action="Empleados" class="btn btn-secondary">
+Cancelar
+</a>
 
 </form>
