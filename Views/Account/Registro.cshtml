@@ -1,0 +1,45 @@
+@model AlqoMishi.ViewModels.RegistroViewModel
+
+<h2>Registro</h2>
+
+<form asp-action="Registro">
+
+<div class="mb-3">
+
+<label>Nombre</label>
+
+<input asp-for="Nombre" class="form-control"/>
+
+</div>
+
+<div class="mb-3">
+
+<label>Apellido</label>
+
+<input asp-for="Apellido" class="form-control"/>
+
+</div>
+
+<div class="mb-3">
+
+<label>Email</label>
+
+<input asp-for="Email" class="form-control"/>
+
+</div>
+
+<div class="mb-3">
+
+<label>Contraseña</label>
+
+<input asp-for="Password" class="form-control"/>
+
+</div>
+
+<button class="btn btn-success">
+
+Crear cuenta
+
+</button>
+
+</form>

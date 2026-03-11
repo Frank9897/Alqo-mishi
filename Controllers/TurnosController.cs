@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AlqoMishi.Controllers;
 
-[Authorize]
+[AllowAnonymous]
 public class TurnosController : Controller
 {
     private readonly TurnoServicio _turnoServicio;
