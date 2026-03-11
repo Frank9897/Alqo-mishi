@@ -22,4 +22,5 @@ public class AlqoMishiDbContext
     public DbSet<Turno> Turnos { get; set; }
 
     public DbSet<DisponibilidadEmpleado> DisponibilidadesEmpleado { get; set; }
+    public DbSet<HistorialMedico> HistorialesMedicos { get; set; }
 }

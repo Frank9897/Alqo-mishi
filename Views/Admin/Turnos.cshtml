@@ -39,16 +39,33 @@
 
 <td>
 
+<a class="btn btn-warning btn-sm"
+   asp-action="EnEspera"
+   asp-route-id="@turno.Id">
+
+    En espera
+
+</a>
+
 <a class="btn btn-success btn-sm"
-asp-action="MarcarAtendido"
-asp-route-id="@turno.Id">
-Atendido
+   asp-action="AtenderTurno"
+   asp-route-id="@turno.Id">
+
+    Atendido
+
+</a>
+
+<a asp-action="Atender" asp-route-id="@turno.Id"
+   class="btn btn-primary btn-sm">
+   Atender
 </a>
 
 <a class="btn btn-danger btn-sm"
-asp-action="CancelarTurno"
-asp-route-id="@turno.Id">
-Cancelar
+   asp-action="CancelarTurno"
+   asp-route-id="@turno.Id">
+
+    Cancelar
+
 </a>
 
 </td>

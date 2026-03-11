@@ -30,7 +30,10 @@
                 <td>@franja.HoraFin.ToString(@"hh\:mm")</td>
                 <td>@franja.Capacidad</td>
                 <td>$ @franja.Precio.ToString("N0")</td>
-                <td>@franja.Empleado?.Usuario?.Nombre @franja.Empleado?.Usuario?.Apellido</td>
+                <td>
+                @franja.Empleado?.Usuario?.Nombre
+                @franja.Empleado?.Usuario?.Apellido
+                </td>
                 <td>
                 <a class="btn btn-sm btn-warning"
                 href="/Admin/EditarFranja/@franja.Id">

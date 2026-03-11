@@ -1,0 +1,55 @@
+@model AlqoMishi.ViewModels.AtencionTurnoViewModel
+
+<h2>Atención Veterinaria</h2>
+
+<div class="card p-4">
+
+    <p><strong>Mascota:</strong> @Model.Mascota</p>
+    <p><strong>Cliente:</strong> @Model.Cliente</p>
+    <p><strong>Fecha:</strong> @Model.Fecha</p>
+
+    <form asp-action="GuardarHistorial" method="post">
+
+        <input type="hidden" asp-for="TurnoId"/>
+
+        <div class="mb-3">
+            <label asp-for="Diagnostico"></label>
+            <textarea asp-for="Diagnostico" class="form-control"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Tratamiento"></label>
+            <textarea asp-for="Tratamiento" class="form-control"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Medicamentos"></label>
+            <textarea asp-for="Medicamentos" class="form-control"></textarea>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Peso"></label>
+                <input asp-for="Peso" class="form-control"/>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Temperatura"></label>
+                <input asp-for="Temperatura" class="form-control"/>
+            </div>
+
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Observaciones"></label>
+            <textarea asp-for="Observaciones" class="form-control"></textarea>
+        </div>
+
+        <button class="btn btn-success">
+            Guardar historial médico
+        </button>
+
+    </form>
+
+</div>

@@ -17,16 +17,35 @@ public class TurnoServicio
     string nombre,
     string especie,
     string raza,
-    string observaciones,
+    int? edad,
+    string sexo,
+    string notas,
     int propietarioId)
-{
+    {
+
     var mascota = new Mascota
     {
-        Nombre = nombre,
-        Especie = especie,
-        Raza = raza,
-        Notas = observaciones,
-        PropietarioId = propietarioId
+    Nombre = string.IsNullOrWhiteSpace(nombre)
+    ? "Mascota sin nombre"
+    : nombre,
+
+    Especie = string.IsNullOrWhiteSpace(especie)
+    ? "No especificado"
+    : especie,
+
+    Raza = string.IsNullOrWhiteSpace(raza)
+    ? "No especificado"
+    : raza,
+
+    Edad = edad ?? 0,
+
+    Sexo = string.IsNullOrWhiteSpace(sexo)
+    ? "No especificado"
+    : sexo,
+
+    Notas = notas,
+
+    PropietarioId = propietarioId
     };
 
     _context.Mascotas.Add(mascota);
@@ -34,7 +53,8 @@ public class TurnoServicio
     await _context.SaveChangesAsync();
 
     return mascota;
-}
+
+    }
 
     public async Task<Franja?> ObtenerFranjaAsync(int franjaId)
     {

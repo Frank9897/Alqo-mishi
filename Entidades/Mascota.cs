@@ -18,5 +18,6 @@ public class Mascota
 
     public int PropietarioId { get; set; }
 
-    public Usuario? Propietario { get; set; }
+    public Usuario Propietario { get; set; }
+    public List<HistorialMedico> HistorialesMedicos { get; set; } = new();
 }

@@ -36,6 +36,18 @@
 <input class="form-control" asp-for="Precio"/>
 </div>
 
+<div class="mb-3">
+
+<label>Veterinario</label>
+
+<select asp-for="EmpleadoId"
+asp-items="ViewBag.Empleados"
+class="form-control">
+
+</select>
+
+</div>
+
 <button class="btn btn-success">
 Guardar cambios
 </button>

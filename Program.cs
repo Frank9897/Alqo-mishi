@@ -53,9 +53,32 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-using(var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
-    await SeedData.Inicializar(scope.ServiceProvider);
+    var services = scope.ServiceProvider;
+
+    await SeedUsuarioAnonimo(services);
 }
 
 app.Run();
+
+static async Task SeedUsuarioAnonimo(IServiceProvider services)
+{
+    var userManager = services.GetRequiredService<UserManager<Usuario>>();
+
+    var usuario = await userManager.FindByEmailAsync("anonimo@alqomishi.com");
+
+    if (usuario == null)
+    {
+        var anonimo = new Usuario
+        {
+            UserName = "anonimo@alqomishi.com",
+            Email = "anonimo@alqomishi.com",
+            Nombre = "Cliente",
+            Apellido = "Anonimo",
+            EmailConfirmed = true
+        };
+
+        await userManager.CreateAsync(anonimo, "Anonimo123!");
+    }
+}

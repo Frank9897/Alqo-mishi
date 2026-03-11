@@ -1,4 +1,6 @@
 ﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Identity
+@using AlqoMishi.Entidades
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,101 +39,62 @@ data-bs-target="#navbarMain">
 
 <ul class="navbar-nav me-auto">
 
-<li class="nav-item">
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="Home" asp-action="Index">
+            Inicio
+        </a>
+    </li>
 
-<a class="nav-link"
-asp-controller="Home"
-asp-action="Index">
 
-Inicio
-
-</a>
-
-</li>
-
-@if (User.Identity.IsAuthenticated)
-{
-
-    if (User.IsInRole("Admin"))
+    @if (User.IsInRole("Cliente") || !User.Identity.IsAuthenticated)
     {
-
         <li class="nav-item">
-
-        <a class="nav-link"
-        asp-controller="Admin"
-        asp-action="Empleados">
-
-        Veterinarios
-
-        </a>
-
+            <a class="nav-link" asp-controller="Turnos" asp-action="Index">
+                Turnos
+            </a>
         </li>
 
-        <li class="nav-item">
-
-        <a class="nav-link"
-        asp-controller="Admin"
-        asp-action="Franjas">
-
-        Franjas horarias
-
-        </a>
-
-        </li>
-
+        @if (User.Identity.IsAuthenticated)
+        {
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Mascotas" asp-action="Index">
+                    Mascotas
+                </a>
+            </li>
+        }
     }
 
-    else if (User.IsInRole("Veterinario"))
+
+    @if (User.IsInRole("Admin"))
     {
-
         <li class="nav-item">
-
-        <a class="nav-link"
-        asp-controller="Veterinario"
-        asp-action="Agenda">
-
-        Agenda
-
-        </a>
-
+            <a class="nav-link" asp-controller="Admin" asp-action="Empleados">
+                Veterinarios
+            </a>
         </li>
 
-    }
-
-    else
-    {
-
         <li class="nav-item">
-
-        <a class="nav-link"
-        asp-controller="Turnos"
-        asp-action="Index">
-
-        Turnos
-
-        </a>
-
+            <a class="nav-link" asp-controller="Admin" asp-action="Franjas">
+                Franjas horarias
+            </a>
         </li>
 
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Admin" asp-action="Turnos">
+                Turnos
+            </a>
+        </li>
     }
 
-}
-else
-{
 
-<li class="nav-item">
-
-<a class="nav-link"
-asp-controller="Turnos"
-asp-action="Index">
-
-Turnos
-
-</a>
-
-</li>
-
-}
+    @if (User.IsInRole("Empleado"))
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Empleado" asp-action="Agenda">
+                Mi agenda
+            </a>
+        </li>
+    }
 
 </ul>
 
@@ -142,9 +105,15 @@ Turnos
 
 <li class="nav-item">
 
+@inject UserManager<Usuario> UserManager
+
 <span class="navbar-text me-3">
 
-Hola @User.Identity.Name
+@{
+    var usuario = await UserManager.GetUserAsync(User);
+}
+
+Hola @(usuario?.Nombre ?? User.Identity.Name)
 
 </span>
 

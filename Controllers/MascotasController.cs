@@ -46,4 +46,17 @@ public class MascotasController : Controller
 
         return RedirectToAction("MisMascotas");
     }
+
+    public async Task<IActionResult> Historial(int id)
+{
+    var mascota = await _context.Mascotas
+        .Include(m => m.HistorialesMedicos)
+        .ThenInclude(h => h.Turno)
+        .FirstOrDefaultAsync(m => m.Id == id);
+
+    if (mascota == null)
+        return NotFound();
+
+    return View(mascota);
+}
 }

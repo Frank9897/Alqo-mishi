@@ -73,25 +73,48 @@ public class TurnosController : Controller
     [HttpPost]
     public async Task<IActionResult> ReservarTurno([FromBody] ReservaTurnoDto dto)
     {
-        var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        if (dto == null)
+            return BadRequest("Datos inválidos");
+
+        int usuarioId;
+
+        // USUARIO LOGUEADO
+        if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        }
+        else
+        {
+            // USUARIO ANÓNIMO
+            var anonimo = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == "anonimo@alqomishi.com");
+
+            if (anonimo == null)
+                return BadRequest("Usuario anónimo no encontrado");
+
+            usuarioId = anonimo.Id;
+        }
+
         var mascota = await _turnoServicio.CrearMascotaAsync(
-            dto.Mascota,
-            dto.Especie,
-            dto.Raza,
-            dto.Observaciones,
+            dto.Mascota ?? "",
+            dto.Especie ?? "",
+            dto.Raza ?? "",
+            dto.Edad,
+            dto.Sexo ?? "",
+            dto.Notas ?? "",
             usuarioId
-            );
+        );
 
         var franja = await _turnoServicio.ObtenerFranjaAsync(dto.FranjaId);
 
         if (franja == null)
-            return BadRequest();
+            return BadRequest("Franja inválida");
 
         var turnoCreado = await _turnoServicio.CrearTurnoAsync(
             mascota.Id,
-            0,
+            usuarioId,
             franja.Id,
-            dto.Observaciones
+            dto.Observaciones ?? ""
         );
 
         if (!turnoCreado)

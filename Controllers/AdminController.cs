@@ -69,9 +69,10 @@ public class AdminController : Controller
     }
     public async Task<IActionResult> Franjas()
     {
-        var franjas = await _context.Franjas
-            .Include(f => f.Empleado)
-            .ToListAsync();
+       var franjas = await _context.Franjas
+                    .Include(f => f.Empleado)
+                    .ThenInclude(e => e.Usuario)
+                    .ToListAsync();
 
         return View(franjas);
     }
@@ -126,6 +127,16 @@ public class AdminController : Controller
         if (franja == null)
             return NotFound();
 
+        var empleados = await _context.Empleados
+        .Include(e => e.Usuario)
+        .Select(e => new
+        {
+        Id = e.Id,
+        Nombre = e.Usuario.Nombre + " " + e.Usuario.Apellido
+        })
+        .ToListAsync();
+
+        ViewBag.Empleados = new SelectList(empleados,"Id","Nombre");
         return View(franja);
     }
 
@@ -273,6 +284,78 @@ public class AdminController : Controller
             return NotFound();
 
         turno.Estado = "Cancelado";
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Turnos");
+    }
+
+    public async Task<IActionResult> EnEspera(int id)
+    {
+        var turno = await _context.Turnos.FindAsync(id);
+
+        if (turno == null)
+            return NotFound();
+
+        turno.Estado = "En espera";
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Turnos");
+    }
+
+    public async Task<IActionResult> Atender(int id)
+    {
+        var turno = await _context.Turnos
+            .Include(t => t.Mascota)
+            .ThenInclude(m => m.Propietario)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        if (turno == null)
+            return NotFound();
+
+        var vm = new AtencionTurnoViewModel
+        {
+            TurnoId = turno.Id,
+            Mascota = turno.Mascota.Nombre,
+            Cliente = turno.Mascota.Propietario.Nombre,
+            Fecha = turno.Franja.Fecha
+        };
+
+        return View(vm);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> GuardarHistorial(AtencionTurnoViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View("Atender", model);
+
+        var turno = await _context.Turnos
+            .Include(t => t.Franja)
+            .FirstOrDefaultAsync(t => t.Id == model.TurnoId);
+
+        if (turno.EmpleadoId == null)
+        {
+            return BadRequest("El turno no tiene veterinario asignado");
+        }
+
+        var historial = new HistorialMedico
+        {
+            MascotaId = turno.MascotaId,
+            TurnoId = turno.Id,
+            VeterinarioId = turno.EmpleadoId.Value,
+            Diagnostico = model.Diagnostico,
+            Tratamiento = model.Tratamiento,
+            Medicamentos = model.Medicamentos,
+            Peso = model.Peso,
+            Temperatura = model.Temperatura,
+            Observaciones = model.Observaciones
+        };
+
+        _context.HistorialesMedicos.Add(historial);
+
+        turno.Estado = "Atendido";
 
         await _context.SaveChangesAsync();
 

@@ -1,8 +1,14 @@
+@{
+    Layout = "_Layout";
+}
+
 <h2 class="mb-4">Sistema de Turnos - ALQO MISHI</h2>
 
 <div class="container-fluid">
     <div id="calendario"></div>
 </div>
+
+<!-- MODAL RESERVA -->
 <div class="modal fade" id="modalReserva" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -14,41 +20,158 @@
 
             <div class="modal-body">
 
-                <p><strong>Inicio:</strong> <span id="horaInicio"></span></p>
-                <p><strong>Fin:</strong> <span id="horaFin"></span></p>
+                <div class="alert alert-info">
 
-                <div class="mb-3">
-                    <label>Mascota</label>
-                    <select id="mascotaId" class="form-control">
-                    </select>
+                    <strong>Horario seleccionado</strong><br>
+
+                    Inicio: <span id="horaInicio"></span><br>
+                    Fin: <span id="horaFin"></span>
+
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Observaciones</label>
-                    <textarea class="form-control" id="observaciones"></textarea>
+
+                <h6 class="mt-3">Mascota registrada</h6>
+
+                <select id="mascotaId" class="form-control mb-3">
+                    <option value="">Seleccionar mascota</option>
+                </select>
+
+                <div class="text-center mb-3">
+                    <span class="text-muted">o registrar una nueva mascota</span>
                 </div>
+
+
+                <div class="card p-3 bg-light">
+
+                    <h6 class="mb-3">Datos de la mascota</h6>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Nombre</label>
+
+                            <input type="text"
+                                class="form-control"
+                                id="mascota"
+                                placeholder="Ej: Firulais">
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Especie</label>
+
+                            <input type="text"
+                                class="form-control"
+                                id="especie"
+                                placeholder="Ej: Perro">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Raza</label>
+
+                            <input type="text"
+                                class="form-control"
+                                id="raza"
+                                placeholder="Ej: Labrador">
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Edad aproximada</label>
+
+                            <input type="number"
+                                class="form-control"
+                                id="edad"
+                                placeholder="Ej: 5">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Sexo</label>
+
+                            <select id="sexo" class="form-control">
+
+                                <option value="">Seleccionar</option>
+                                <option value="Macho">Macho</option>
+                                <option value="Hembra">Hembra</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Notas médicas</label>
+
+                            <input type="text"
+                                class="form-control"
+                                id="notas"
+                                placeholder="Ej: alergia a penicilina">
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-3">
+
+                        <label>Observaciones del turno</label>
+
+                        <textarea
+                            class="form-control"
+                            id="observaciones"
+                            rows="3"
+                            placeholder="Ej: consulta general, vacunación, control, vómitos, revisión..."></textarea>
+
+                    </div>
+
+                </div>
+
+
 
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-primary" id="btnConfirmar">
-                    Confirmar reserva
+
+               <button class="btn btn-success w-100" id="btnConfirmar">
+
+                    <i class="bi bi-calendar-check"></i>
+
+                    Confirmar turno
+
                 </button>
+
             </div>
 
         </div>
     </div>
 </div>
+
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/es.global.min.js"></script>
 
 <script>
 
-
 document.addEventListener('DOMContentLoaded', function () {
-       
+
     let franjaSeleccionada = null;
 
     var calendarioEl = document.getElementById('calendario');
@@ -108,10 +231,10 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
             modal.show();
+
             cargarMascotas();
 
         }
-
 
     });
 
@@ -120,35 +243,65 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function cargarMascotas(){
 
-        const response = await fetch("/api/mascotas");
+        try{
 
-        const mascotas = await response.json();
+            const response = await fetch("/api/mascotas");
 
-        let select = document.getElementById("mascotaId");
+            if(!response.ok) return;
 
-        select.innerHTML = "";
+            const mascotas = await response.json();
 
-        mascotas.forEach(m => {
+            let select = document.getElementById("mascotaId");
 
-            let option = document.createElement("option");
+            select.innerHTML = '<option value="">Seleccionar mascota</option>';
 
-            option.value = m.id;
+            mascotas.forEach(m => {
 
-            option.text = m.nombre;
+                let option = document.createElement("option");
 
-            select.appendChild(option);
+                option.value = m.id;
 
-        });
+                option.text = m.nombre;
+
+                select.appendChild(option);
+
+            });
+
+        }catch{
+            console.log("Usuario no logueado o sin mascotas");
+        }
 
     }
 
-    document.getElementById("btnConfirmar")
+
+document.getElementById("btnConfirmar")
 .addEventListener("click", async function(){
 
     let mascotaId = document.getElementById("mascotaId").value;
-    let observaciones = document.getElementById("observaciones").value;
 
-    await fetch("/Turnos/ReservarTurno", {
+    let payload = {
+
+        franjaId: franjaSeleccionada,
+
+        mascotaId: mascotaId ? parseInt(mascotaId) : null,
+
+        mascota: document.getElementById("mascota").value,
+
+        especie: document.getElementById("especie").value,
+
+        raza: document.getElementById("raza").value,
+
+        edad: document.getElementById("edad").value,
+
+        sexo: document.getElementById("sexo").value,
+
+        notas: document.getElementById("notas").value,
+
+        observaciones: document.getElementById("observaciones").value
+
+    };
+
+    const res = await fetch("/Turnos/ReservarTurno", {
 
         method: "POST",
 
@@ -156,21 +309,26 @@ document.addEventListener('DOMContentLoaded', function () {
             "Content-Type": "application/json"
         },
 
-        body: JSON.stringify({
-        franjaId: franjaSeleccionada,
-        mascotaId: mascotaId,
-        observaciones: observaciones
-    })
+        body: JSON.stringify(payload)
 
     });
 
-    alert("Turno reservado correctamente");
+    if(res.ok){
 
-    location.reload();
+        alert("Turno reservado correctamente");
 
-});     
-    
+        location.reload();
+
+    }else{
+
+        const error = await res.text();
+
+        alert(error);
+
+    }
+
 });
 
+});
 
 </script>
