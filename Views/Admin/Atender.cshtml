@@ -1,55 +1,102 @@
 @model AlqoMishi.ViewModels.AtencionTurnoViewModel
 
-<h2>Atención Veterinaria</h2>
+<h2 class="mb-4">🩺 Atención Veterinaria</h2>
 
-<div class="card p-4">
+<div class="card shadow-sm p-4">
 
-    <p><strong>Mascota:</strong> @Model.Mascota</p>
-    <p><strong>Cliente:</strong> @Model.Cliente</p>
-    <p><strong>Fecha:</strong> @Model.Fecha</p>
+    <div class="mb-4">
 
-    <form asp-action="GuardarHistorial" method="post">
+        <h5 class="border-bottom pb-2">🐾 Información del paciente</h5>
 
-        <input type="hidden" asp-for="TurnoId"/>
+        <div class="row mt-3">
 
-        <div class="mb-3">
-            <label asp-for="Diagnostico"></label>
-            <textarea asp-for="Diagnostico" class="form-control"></textarea>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Tratamiento"></label>
-            <textarea asp-for="Tratamiento" class="form-control"></textarea>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Medicamentos"></label>
-            <textarea asp-for="Medicamentos" class="form-control"></textarea>
-        </div>
-
-        <div class="row">
-
-            <div class="col-md-6 mb-3">
-                <label asp-for="Peso"></label>
-                <input asp-for="Peso" class="form-control"/>
+            <div class="col-md-4">
+                <strong>Mascota:</strong> @Model.Mascota
             </div>
 
-            <div class="col-md-6 mb-3">
-                <label asp-for="Temperatura"></label>
-                <input asp-for="Temperatura" class="form-control"/>
+            <div class="col-md-4">
+                <strong>Cliente:</strong> @Model.Cliente
+            </div>
+
+            <div class="col-md-4">
+                <strong>Fecha:</strong> @Model.Fecha.ToString("dd/MM/yyyy")
             </div>
 
         </div>
 
-        <div class="mb-3">
-            <label asp-for="Observaciones"></label>
-            <textarea asp-for="Observaciones" class="form-control"></textarea>
+    </div>
+
+
+    <form asp-controller="Admin"
+      asp-action="GuardarHistorial"
+      method="post">
+
+        <input type="hidden" name="TurnoId" value="@Model.TurnoId" />
+
+        <div class="card shadow-sm p-4">
+
+        <h5 class="mb-3">🩺 Consulta médica</h5>
+
+            <div class="mb-3">
+            <label>Diagnóstico</label>
+            <textarea class="form-control"
+            name="Diagnostico"
+            placeholder="Ej: Gastroenteritis, infección cutánea, control general..."></textarea>
+            </div>
+
+            <div class="mb-3">
+            <label>Tratamiento</label>
+            <textarea class="form-control"
+            name="Tratamiento"
+            placeholder="Ej: dieta blanda durante 3 días, reposo, limpieza de herida..."></textarea>
+            </div>
+
+            <div class="mb-3">
+            <label>Medicamentos</label>
+            <textarea class="form-control"
+            name="Medicamentos"
+            placeholder="Ej: Amoxicilina 250mg cada 12h por 7 días"></textarea>
+            </div>
+
+            <h5 class="mt-4">📊 Signos clínicos</h5>
+
+            <div class="row">
+
+            <div class="col-md-6 mb-3">
+            <label>Peso</label>
+            <input type="text"
+            class="form-control"
+            name="Peso"
+            placeholder="Ej: 12.5 kg">
+            </div>
+
+            <div class="col-md-6 mb-3">
+            <label>Temperatura</label>
+            <input type="text"
+            class="form-control"
+            name="Temperatura"
+            placeholder="Ej: 38.5 °C">
+            </div>
+
+            </div>
+
+            <div class="mb-3">
+            <label>Observaciones</label>
+            <textarea class="form-control"
+            name="Observaciones"
+            placeholder="Ej: paciente activo, leve deshidratación, se recomienda control en 7 días"></textarea>
+            </div>
+
+            <div class="text-end">
+
+            <button class="btn btn-success">
+            💾 Guardar historial médico
+            </button>
+
+            </div>
+
         </div>
 
-        <button class="btn btn-success">
-            Guardar historial médico
-        </button>
-
-    </form>
+</form>
 
 </div>

@@ -1,0 +1,63 @@
+@model AlqoMishi.Entidades.Mascota
+
+<h2 class="mb-4">📖 Historial clínico</h2>
+
+<div class="card p-4 shadow-sm">
+
+    <h5 class="mb-3">
+        🐾 Mascota: @Model.Nombre
+    </h5>
+
+    <hr />
+
+    @if (!Model.HistorialesMedicos.Any())
+    {
+        <div class="alert alert-info">
+            Esta mascota aún no tiene historial médico.
+        </div>
+    }
+    else
+    {
+
+        <table class="table table-striped">
+
+            <thead>
+
+                <tr>
+                    <th>Fecha</th>
+                    <th>Veterinario</th>
+                    <th>Diagnóstico</th>
+                    <th>Tratamiento</th>
+                    <th>Medicamentos</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var h in Model.HistorialesMedicos.OrderByDescending(x => x.Fecha))
+                {
+                    <tr>
+
+                        <td>@h.Fecha.ToString("dd/MM/yyyy")</td>
+
+                        <td>
+                            @h.Veterinario?.Usuario?.Nombre
+                        </td>
+
+                        <td>@h.Diagnostico</td>
+
+                        <td>@h.Tratamiento</td>
+
+                        <td>@h.Medicamentos</td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    }
+
+</div>

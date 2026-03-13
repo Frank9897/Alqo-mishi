@@ -17,4 +17,5 @@ public class TurnoAdminViewModel
     public string Estado { get; set; }
 
     public decimal Precio { get; set; }
+    public int MascotaId { get; set; }
 }

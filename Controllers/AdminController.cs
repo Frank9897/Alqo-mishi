@@ -250,6 +250,7 @@ public class AdminController : Controller
         var lista = turnos.Select(t => new TurnoAdminViewModel
         {
             Id = t.Id,
+            MascotaId = t.MascotaId,
             Mascota = t.Mascota.Nombre,
             Cliente = t.Cliente.Nombre + " " + t.Cliente.Apellido,
             Veterinario = t.Empleado.Usuario.Nombre + " " + t.Empleado.Usuario.Apellido,
@@ -308,7 +309,10 @@ public class AdminController : Controller
     {
         var turno = await _context.Turnos
             .Include(t => t.Mascota)
-            .ThenInclude(m => m.Propietario)
+                .ThenInclude(m => m.Propietario)
+            .Include(t => t.Franja)
+            .Include(t => t.Empleado)
+                .ThenInclude(e => e.Usuario)
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (turno == null)
@@ -326,39 +330,34 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> GuardarHistorial(AtencionTurnoViewModel model)
+    public async Task<IActionResult> GuardarHistorial(HistorialMedico historial)
     {
         if (!ModelState.IsValid)
-            return View("Atender", model);
-
-        var turno = await _context.Turnos
-            .Include(t => t.Franja)
-            .FirstOrDefaultAsync(t => t.Id == model.TurnoId);
-
-        if (turno.EmpleadoId == null)
-        {
-            return BadRequest("El turno no tiene veterinario asignado");
-        }
-
-        var historial = new HistorialMedico
-        {
-            MascotaId = turno.MascotaId,
-            TurnoId = turno.Id,
-            VeterinarioId = turno.EmpleadoId.Value,
-            Diagnostico = model.Diagnostico,
-            Tratamiento = model.Tratamiento,
-            Medicamentos = model.Medicamentos,
-            Peso = model.Peso,
-            Temperatura = model.Temperatura,
-            Observaciones = model.Observaciones
-        };
+            return RedirectToAction("Turnos");
 
         _context.HistorialesMedicos.Add(historial);
 
-        turno.Estado = "Atendido";
+        var turno = await _context.Turnos.FindAsync(historial.TurnoId);
+
+        if (turno != null)
+            turno.Estado = "Atendido";
 
         await _context.SaveChangesAsync();
 
-        return RedirectToAction("Turnos");
+        return RedirectToAction("Historial");
+    }
+
+    public async Task<IActionResult> Historial(int mascotaId)
+    {
+        var mascota = await _context.Mascotas
+            .Include(m => m.HistorialesMedicos)
+            .ThenInclude(h => h.Veterinario)
+            .ThenInclude(v => v.Usuario)
+            .FirstOrDefaultAsync(m => m.Id == mascotaId);
+
+        if (mascota == null)
+            return NotFound();
+
+        return View(mascota);
     }
 }

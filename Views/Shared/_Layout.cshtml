@@ -1,24 +1,66 @@
-﻿@using System.Security.Claims
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 @using AlqoMishi.Entidades
+@inject UserManager<Usuario> UserManager
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AlqoMishi</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/AlqoMishi.styles.css" asp-append-version="true" />
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>@ViewData["Title"] - AlqoMishi</title>
+
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+<style>
+
+/* hero veterinaria */
+
+.hero-vet
+{
+background: linear-gradient(135deg,#0d6efd,#198754);
+color:white;
+padding:40px 20px;
+border-radius:10px;
+margin-bottom:25px;
+}
+
+.hero-vet h1
+{
+font-size:28px;
+font-weight:600;
+}
+
+.hero-vet p
+{
+opacity:0.9;
+margin-top:10px;
+}
+
+/* footer */
+
+.footer
+{
+background:#f8f9fa;
+padding:15px;
+font-size:14px;
+}
+
+</style>
+
 </head>
+
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+<header>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
 
 <div class="container-fluid">
 
-<a class="navbar-brand"
+<a class="navbar-brand fw-bold"
 asp-controller="Home"
 asp-action="Index">
 
@@ -39,83 +81,74 @@ data-bs-target="#navbarMain">
 
 <ul class="navbar-nav me-auto">
 
-    <li class="nav-item">
-        <a class="nav-link" asp-controller="Home" asp-action="Index">
-            Inicio
-        </a>
-    </li>
+<li class="nav-item">
+<a class="nav-link" asp-controller="Home" asp-action="Index">
+Inicio
+</a>
+</li>
 
 
-    @if (User.IsInRole("Cliente") || !User.Identity.IsAuthenticated)
-    {
-        <li class="nav-item">
-            <a class="nav-link" asp-controller="Turnos" asp-action="Index">
-                Turnos
-            </a>
-        </li>
+@if (User.IsInRole("Cliente") || !User.Identity.IsAuthenticated)
+{
+<li class="nav-item">
+<a class="nav-link" asp-controller="Turnos" asp-action="Index">
+Turnos
+</a>
+</li>
 
-        @if (User.Identity.IsAuthenticated)
-        {
-            <li class="nav-item">
-                <a class="nav-link" asp-controller="Mascotas" asp-action="Index">
-                    Mascotas
-                </a>
-            </li>
-        }
-    }
-
-
-    @if (User.IsInRole("Admin"))
-    {
-        <li class="nav-item">
-            <a class="nav-link" asp-controller="Admin" asp-action="Empleados">
-                Veterinarios
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" asp-controller="Admin" asp-action="Franjas">
-                Franjas horarias
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" asp-controller="Admin" asp-action="Turnos">
-                Turnos
-            </a>
-        </li>
-    }
+@if (User.Identity.IsAuthenticated)
+{
+<li class="nav-item">
+<a class="nav-link" asp-controller="Mascotas" asp-action="Index">
+Mascotas
+</a>
+</li>
+}
+}
 
 
-    @if (User.IsInRole("Empleado"))
-    {
-        <li class="nav-item">
-            <a class="nav-link" asp-controller="Empleado" asp-action="Agenda">
-                Mi agenda
-            </a>
-        </li>
-    }
+@if (User.IsInRole("Admin"))
+{
+<li class="nav-item">
+<a class="nav-link" asp-controller="Admin" asp-action="Empleados">
+Veterinarios
+</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" asp-controller="Admin" asp-action="Franjas">
+Franjas horarias
+</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" asp-controller="Admin" asp-action="Turnos">
+Turnos
+</a>
+</li>
+}
+
+
+@if (User.IsInRole("Empleado"))
+{
+<li class="nav-item">
+<a class="nav-link" asp-controller="Empleado" asp-action="Agenda">
+Mi agenda
+</a>
+</li>
+}
 
 </ul>
+
 
 <ul class="navbar-nav">
 
 @if (User.Identity.IsAuthenticated)
 {
 
-<li class="nav-item">
+<li class="nav-item d-flex align-items-center me-3 text-light">
 
-@inject UserManager<Usuario> UserManager
-
-<span class="navbar-text me-3">
-
-@{
-    var usuario = await UserManager.GetUserAsync(User);
-}
-
-Hola @(usuario?.Nombre ?? User.Identity.Name)
-
-</span>
+Hola @(User.FindFirst("Nombre")?.Value ?? User.Identity.Name)
 
 </li>
 
@@ -126,9 +159,7 @@ asp-action="CerrarSesion"
 method="post">
 
 <button class="btn btn-outline-light btn-sm">
-
 Cerrar sesión
-
 </button>
 
 </form>
@@ -172,21 +203,63 @@ Registrarse
 </div>
 
 </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted mt-4">
-        <div class="container">
-            &copy; 2026 - AlqoMishi - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+</header>
+
+
+<div class="container mt-4">
+
+
+<div class="hero-vet">
+
+<h1>Clínica Veterinaria AlqoMishi</h1>
+
+<p>
+
+Cuidamos la salud y bienestar de tus mascotas con atención veterinaria profesional.
+Gestiona turnos, historial médico y seguimiento clínico en un solo lugar.
+
+</p>
+
+</div>
+
+
+<main role="main">
+
+@RenderBody()
+
+</main>
+
+</div>
+
+
+
+<footer class="footer mt-5 border-top">
+
+<div class="container text-center">
+
+© 2026 - Clínica Veterinaria AlqoMishi  
+
+<br>
+
+Sistema de gestión veterinaria para atención clínica y seguimiento de mascotas.
+
+<br>
+
+<a asp-controller="Home" asp-action="Privacy">
+Política de privacidad
+</a>
+
+</div>
+
+</footer>
+
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+@await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

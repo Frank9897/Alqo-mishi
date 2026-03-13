@@ -59,7 +59,13 @@
    class="btn btn-primary btn-sm">
    Atender
 </a>
+<a asp-action="Historial"
+   asp-route-mascotaId="@turno.MascotaId"
+   class="btn btn-secondary btn-sm">
 
+    Historial
+
+</a>
 <a class="btn btn-danger btn-sm"
    asp-action="CancelarTurno"
    asp-route-id="@turno.Id">
