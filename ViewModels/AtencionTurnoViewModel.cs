@@ -5,6 +5,9 @@ namespace AlqoMishi.ViewModels;
 public class AtencionTurnoViewModel
 {
     public int TurnoId { get; set; }
+    public int MascotaId { get; set; }
+
+    public int VeterinarioId { get; set; }
 
     public string Mascota { get; set; }
 

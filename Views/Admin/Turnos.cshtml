@@ -123,46 +123,40 @@ Limpiar
 </td>
 
 <td>$@turno.Precio</td>
-
 <td>
+<div class="btn-group">
 
-<a class="btn btn-warning btn-sm"
-   asp-action="EnEspera"
-   asp-route-id="@turno.Id">
 
-    En espera
+<a class="btn btn-sm btn-outline-secondary"
+asp-controller="Admin"
+asp-action="Historial"
+asp-route-mascotaId="@turno.MascotaId">
 
-</a>
-
-<a class="btn btn-success btn-sm"
-   asp-action="AtenderTurno"
-   asp-route-id="@turno.Id">
-
-    Atendido
+Ver historial
 
 </a>
 
-<a asp-action="Atender" asp-route-id="@turno.Id"
-   class="btn btn-primary btn-sm">
-   Atender
-</a>
-<a asp-action="Historial"
-   asp-route-mascotaId="@turno.MascotaId"
-   class="btn btn-secondary btn-sm">
-
-    Historial
-
-</a>
-<a class="btn btn-danger btn-sm"
-   asp-action="CancelarTurno"
-   asp-route-id="@turno.Id">
-
-    Cancelar
-
+<a class="btn btn-sm btn-success"
+asp-action="Atender"
+asp-route-id="@turno.Id">
+Atender
 </a>
 
+<a class="btn btn-sm btn-warning"
+asp-action="EnEspera"
+asp-route-id="@turno.Id">
+En espera
+</a>
+
+<a class="btn btn-sm btn-danger"
+asp-action="CancelarTurno"
+asp-route-id="@turno.Id"
+onclick="return confirm('¿Cancelar turno?')">
+Cancelar
+</a>
+
+</div>
 </td>
-
 </tr>
 }
 

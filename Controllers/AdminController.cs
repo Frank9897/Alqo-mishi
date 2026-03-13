@@ -348,10 +348,15 @@ public class AdminController : Controller
 
         if (turno == null)
             return NotFound();
-
+        if (turno.EmpleadoId == null)
+        {
+            return BadRequest("El turno no tiene veterinario asignado");
+        }
         var vm = new AtencionTurnoViewModel
         {
             TurnoId = turno.Id,
+            MascotaId = turno.MascotaId,
+            VeterinarioId = turno.EmpleadoId ?? 0,
             Mascota = turno.Mascota.Nombre,
             Cliente = turno.Mascota.Propietario.Nombre,
             Fecha = turno.Franja.Fecha
@@ -363,19 +368,18 @@ public class AdminController : Controller
     [HttpPost]
     public async Task<IActionResult> GuardarHistorial(HistorialMedico historial)
     {
-        if (!ModelState.IsValid)
-            return RedirectToAction("Turnos");
-
         _context.HistorialesMedicos.Add(historial);
 
         var turno = await _context.Turnos.FindAsync(historial.TurnoId);
 
         if (turno != null)
+        {
             turno.Estado = "Atendido";
+        }
 
         await _context.SaveChangesAsync();
 
-        return RedirectToAction("Historial");
+        return RedirectToAction("Historial", new { mascotaId = historial.MascotaId });
     }
 
     public async Task<IActionResult> Historial(int mascotaId)

@@ -32,7 +32,9 @@
       method="post">
 
         <input type="hidden" name="TurnoId" value="@Model.TurnoId" />
-
+        <input type="hidden" name="MascotaId" value="@Model.MascotaId" />
+        <input type="hidden" name="VeterinarioId" value="@Model.VeterinarioId" />
+        <input type="hidden" name="Fecha" value="@DateTime.Now" />
         <div class="card shadow-sm p-4">
 
         <h5 class="mb-3">🩺 Consulta médica</h5>
@@ -64,18 +66,14 @@
 
             <div class="col-md-6 mb-3">
             <label>Peso</label>
-            <input type="text"
-            class="form-control"
-            name="Peso"
-            placeholder="Ej: 12.5 kg">
+            <input type="number" step="0.1" name="Peso" class="form-control">
+            <span class="input-group-text">°C</span>
             </div>
 
             <div class="col-md-6 mb-3">
             <label>Temperatura</label>
-            <input type="text"
-            class="form-control"
-            name="Temperatura"
-            placeholder="Ej: 38.5 °C">
+            <input type="number" step="0.1" name="Temperatura" class="form-control">
+            <span class="input-group-text">kg</span>
             </div>
 
             </div>
