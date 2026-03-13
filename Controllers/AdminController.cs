@@ -237,30 +237,43 @@ public class AdminController : Controller
         return RedirectToAction("Empleados");
     }
 
-    public async Task<IActionResult> Turnos()
+    public async Task<IActionResult> Turnos(DateTime? fecha, int? veterinarioId, string estado)
     {
-        var turnos = await _context.Turnos
+        var query = _context.Turnos
             .Include(t => t.Mascota)
             .Include(t => t.Franja)
             .Include(t => t.Empleado)
                 .ThenInclude(e => e.Usuario)
             .Include(t => t.Cliente)
+            .AsQueryable();
+
+        if (fecha.HasValue)
+        {
+            query = query.Where(t => t.Franja.Fecha.Date == fecha.Value.Date);
+        }
+
+        if (veterinarioId.HasValue)
+        {
+            query = query.Where(t => t.EmpleadoId == veterinarioId.Value);
+        }
+
+        if (!string.IsNullOrEmpty(estado))
+        {
+            query = query.Where(t => t.Estado == estado);
+        }
+
+        var turnos = await query.ToListAsync();
+
+        turnos = turnos
+            .OrderBy(t => t.Franja.Fecha)
+            .ThenBy(t => t.Franja.HoraInicio)
+            .ToList();
+
+        ViewBag.Veterinarios = await _context.Empleados
+            .Include(e => e.Usuario)
             .ToListAsync();
 
-        var lista = turnos.Select(t => new TurnoAdminViewModel
-        {
-            Id = t.Id,
-            MascotaId = t.MascotaId,
-            Mascota = t.Mascota.Nombre,
-            Cliente = t.Cliente.Nombre + " " + t.Cliente.Apellido,
-            Veterinario = t.Empleado.Usuario.Nombre + " " + t.Empleado.Usuario.Apellido,
-            Fecha = t.Franja.Fecha,
-            HoraInicio = t.Franja.HoraInicio,
-            Estado = t.Estado,
-            Precio = t.PrecioFinal
-        });
-
-        return View(lista);
+        return View(turnos);
     }
 
     public async Task<IActionResult> MarcarAtendido(int id)

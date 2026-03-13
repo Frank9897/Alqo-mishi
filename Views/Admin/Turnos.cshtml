@@ -2,6 +2,52 @@
 
 <h2>Historial de turnos</h2>
 
+<form method="get" class="row mb-4">
+
+<div class="col-md-3">
+<label>Fecha</label>
+<input type="date" name="fecha" class="form-control" />
+</div>
+
+<div class="col-md-3">
+<label>Veterinario</label>
+<select name="veterinarioId" class="form-control">
+
+<option value="">Todos</option>
+
+@foreach (var vet in ViewBag.Veterinarios)
+{
+<option value="@vet.Id">
+@vet.Usuario.Nombre @vet.Usuario.Apellido
+</option>
+}
+
+</select>
+</div>
+
+<div class="col-md-3">
+<label>Estado</label>
+<select name="estado" class="form-control">
+
+<option value="">Todos</option>
+<option>Reservado</option>
+<option>En espera</option>
+<option>Atendido</option>
+<option>Cancelado</option>
+
+</select>
+</div>
+
+<div class="col-md-3 d-flex align-items-end">
+
+<button class="btn btn-primary w-100">
+Filtrar
+</button>
+
+</div>
+
+</form>
+
 <table class="table table-striped">
 
 <thead>
