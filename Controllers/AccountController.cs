@@ -81,7 +81,7 @@ public class AccountController : Controller
             Apellido = model.Apellido,
             RolSistema = "Cliente"
         };
-
+        
         var resultado = await _userManager.CreateAsync(usuario, model.Password);
 
         if (!resultado.Succeeded)
@@ -91,6 +91,7 @@ public class AccountController : Controller
 
             return View(model);
         }
+        
 
         await _userManager.AddToRoleAsync(usuario,"Cliente");
 

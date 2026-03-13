@@ -12,6 +12,7 @@
 <th>Especie</th>
 <th>Raza</th>
 <th>Edad</th>
+<th>Sexo</th>
 <th></th>
 </tr>
 </thead>
@@ -26,30 +27,27 @@
 <td>@mascota.Especie</td>
 <td>@mascota.Raza</td>
 <td>@mascota.Edad</td>
-
+<td>@mascota.Sexo</td>
 <td>
 
-<a class="btn btn-warning btn-sm"
-asp-action="Editar"
-asp-route-id="@mascota.Id">
+<a asp-action="Editar"
+   asp-route-id="@mascota.Id"
+   class="btn btn-warning btn-sm">
 Editar
 </a>
 
-<a class="btn btn-danger btn-sm"
-asp-action="Eliminar"
-asp-route-id="@mascota.Id">
+<a asp-action="Eliminar"
+   asp-route-id="@mascota.Id"
+   class="btn btn-danger btn-sm"
+   onclick="return confirm('¿Seguro que deseas eliminar esta mascota?')">
 Eliminar
 </a>
 
-</td>
-<td>
-
-<a asp-action="Historial"
-   asp-route-id="@mascota.Id"
+<a asp-controller="Admin"
+   asp-action="Historial"
+   asp-route-mascotaId="@mascota.Id"
    class="btn btn-outline-primary btn-sm">
-
-    Historial
-
+Historial
 </a>
 
 </td>

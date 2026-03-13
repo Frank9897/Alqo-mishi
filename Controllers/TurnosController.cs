@@ -79,57 +79,56 @@ public class TurnosController : Controller
         if (dto == null)
             return BadRequest("Datos inválidos");
 
-        int usuarioId;
+        var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-        if (User?.Identity?.IsAuthenticated == true)
+        Mascota mascota = null;
+
+        // SI seleccionó mascota existente
+        if (dto.MascotaId != null)
         {
-            usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            mascota = await _context.Mascotas
+                .FirstOrDefaultAsync(m => m.Id == dto.MascotaId);
+
+            if (mascota == null)
+                return BadRequest("Mascota no encontrada");
         }
         else
         {
-            var anon = await _userManager.FindByEmailAsync("anonimo@alqomishi.com");
-
-            if (anon == null)
+            // Crear mascota nueva
+            mascota = new Mascota
             {
-                anon = new Usuario
-                {
-                    UserName = "anonimo@alqomishi.com",
-                    Email = "anonimo@alqomishi.com",
-                    Nombre = "Cliente",
-                    Apellido = "Anonimo",
-                    EmailConfirmed = true
-                };
+                Nombre = dto.Mascota,
+                Especie = dto.Especie,
+                Raza = dto.Raza,
+                Edad = dto.Edad ?? 0,
+                Sexo = dto.Sexo,
+                PropietarioId = usuarioId
+            };
 
-                await _userManager.CreateAsync(anon, "Anonimo123!");
-            }
-
-            usuarioId = anon.Id;
+            _context.Mascotas.Add(mascota);
+            await _context.SaveChangesAsync();
         }
-        var mascota = await _turnoServicio.CrearMascotaAsync(
-            dto.Mascota ?? "",
-            dto.Especie ?? "",
-            dto.Raza ?? "",
-            dto.Edad,
-            dto.Sexo ?? "",
-            dto.Notas ?? "",
-            usuarioId
-        );
 
-        var franja = await _turnoServicio.ObtenerFranjaAsync(dto.FranjaId);
+        var franja = await _context.Franjas
+            .FirstOrDefaultAsync(f => f.Id == dto.FranjaId);
 
         if (franja == null)
-            return BadRequest("Franja inválida");
+            return BadRequest("Franja no encontrada");
 
-        var turnoCreado = await _turnoServicio.CrearTurnoAsync(
-            mascota.Id,
-            usuarioId,
-            franja.Id,
-            dto.Observaciones ?? ""
-        );
+        var turno = new Turno
+        {
+            MascotaId = mascota.Id,
+            ClienteId = usuarioId,
+            EmpleadoId = franja.EmpleadoId,
+            FranjaId = franja.Id,
+            Estado = "Reservado",
+            PrecioFinal = 5000
+        };
 
-        if (!turnoCreado)
-            return BadRequest("No hay cupos disponibles");
+        _context.Turnos.Add(turno);
 
-        return Ok();
+        await _context.SaveChangesAsync();
+
+        return Ok(new { success = true });
     }
 }

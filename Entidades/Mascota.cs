@@ -9,15 +9,15 @@ public class Mascota
     [StringLength(100)]
     public string Nombre { get; set; }
 
-    [Range(0, 100)]
-    public int Edad { get; set; }
-
     [Required]
     [StringLength(50)]
     public string Especie { get; set; }
 
     [StringLength(50)]
     public string Raza { get; set; }
+
+    [Range(0,50)]
+    public int Edad { get; set; }
 
     public string Sexo { get; set; }
 

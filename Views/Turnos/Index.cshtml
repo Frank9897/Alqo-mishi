@@ -285,13 +285,13 @@ document.getElementById("btnConfirmar")
 
         mascotaId: mascotaId ? parseInt(mascotaId) : null,
 
-        mascota: document.getElementById("mascota").value,
+        nombre: document.getElementById("mascota").value,
 
         especie: document.getElementById("especie").value,
 
         raza: document.getElementById("raza").value,
 
-        edad: document.getElementById("edad").value,
+        edad: document.getElementById("edad").value || null,
 
         sexo: document.getElementById("sexo").value,
 

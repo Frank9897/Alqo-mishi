@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using AlqoMishi.ViewModels; 
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
 namespace AlqoMishi.Controllers;
 
-[Authorize(Roles = "Admin")]
+
 public class AdminController : Controller
 {
     private readonly AlqoMishiDbContext _context;
@@ -18,13 +19,13 @@ public class AdminController : Controller
         _context = context;
         _userManager = userManager;
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public IActionResult CrearEmpleado()
     {
         return View();
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> CrearEmpleado(CrearEmpleadoViewModel model)
     {
@@ -67,6 +68,8 @@ public class AdminController : Controller
 
         return RedirectToAction("Empleados");
     }
+
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Franjas()
     {
        var franjas = await _context.Franjas
@@ -76,7 +79,7 @@ public class AdminController : Controller
 
         return View(franjas);
     }
-
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CrearFranja()
     {
         var empleados = await _context.Empleados
@@ -94,7 +97,7 @@ public class AdminController : Controller
 
         return View(model);
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> CrearFranja(CrearFranjaViewModel model)
     {
@@ -119,7 +122,7 @@ public class AdminController : Controller
 
         return RedirectToAction("Franjas");
     }
-
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> EditarFranja(int id)
     {
         var franja = await _context.Franjas.FindAsync(id);
@@ -139,7 +142,7 @@ public class AdminController : Controller
         ViewBag.Empleados = new SelectList(empleados,"Id","Nombre");
         return View(franja);
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> EditarFranja(Franja franja)
     {
@@ -149,7 +152,7 @@ public class AdminController : Controller
 
         return RedirectToAction("Franjas");
     }
-
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> EliminarFranja(int id)
     {
         var franja = await _context.Franjas.FindAsync(id);
@@ -162,7 +165,7 @@ public class AdminController : Controller
 
         return RedirectToAction("Franjas");
     }
-
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Empleados()
     {
         var empleados = await _context.Empleados
@@ -173,7 +176,7 @@ public class AdminController : Controller
     }
 
 
-
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> EditarEmpleado(int id)
     {
         var empleado = await _context.Empleados
@@ -195,7 +198,7 @@ public class AdminController : Controller
 
         return View(vm);
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> EditarEmpleado(EditarEmpleadoViewModel model)
     {
@@ -223,7 +226,7 @@ public class AdminController : Controller
 
         return RedirectToAction("Empleados");
     }
-
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> EliminarEmpleado(int id)
     {
         var empleado = await _context.Empleados.FindAsync(id);
@@ -236,7 +239,7 @@ public class AdminController : Controller
 
         return RedirectToAction("Empleados");
     }
-
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Turnos(DateTime? fecha, int? veterinarioId, string estado, string mascota)
     {
         var query = _context.Turnos
@@ -293,7 +296,7 @@ public class AdminController : Controller
 
         return View(lista);
     }
-
+    [Authorize(Roles = "Admin,Empleado")]
     public async Task<IActionResult> MarcarAtendido(int id)
     {
         var turno = await _context.Turnos.FindAsync(id);
@@ -307,7 +310,7 @@ public class AdminController : Controller
 
         return RedirectToAction("Turnos");
     }
-
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CancelarTurno(int id)
     {
         var turno = await _context.Turnos.FindAsync(id);
@@ -321,7 +324,7 @@ public class AdminController : Controller
 
         return RedirectToAction("Turnos");
     }
-
+    [Authorize(Roles = "Admin,Empleado")]
     public async Task<IActionResult> EnEspera(int id)
     {
         var turno = await _context.Turnos.FindAsync(id);
@@ -335,7 +338,7 @@ public class AdminController : Controller
 
         return RedirectToAction("Turnos");
     }
-
+    [Authorize(Roles = "Admin,Empleado")]
     public async Task<IActionResult> Atender(int id)
     {
         var turno = await _context.Turnos
@@ -364,7 +367,7 @@ public class AdminController : Controller
 
         return View(vm);
     }
-
+    [Authorize(Roles = "Admin,Empleado")]
     [HttpPost]
     public async Task<IActionResult> GuardarHistorial(HistorialMedico historial)
     {
@@ -382,6 +385,7 @@ public class AdminController : Controller
         return RedirectToAction("Historial", new { mascotaId = historial.MascotaId });
     }
 
+    [Authorize(Roles = "Admin,Empleado,Cliente")]
     public async Task<IActionResult> Historial(int mascotaId)
     {
         var mascota = await _context.Mascotas
@@ -393,9 +397,19 @@ public class AdminController : Controller
         if (mascota == null)
             return NotFound();
 
+        var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+        if(mascota == null)
+            return NotFound();
+
+        if(!User.IsInRole("Admin") && mascota.PropietarioId != usuarioId)
+        {
+            return Forbid();
+        }
+
         return View(mascota);
     }
-
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Usuarios()
     {
         var usuarios = await _userManager.Users.ToListAsync();
