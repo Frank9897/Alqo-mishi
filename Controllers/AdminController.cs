@@ -262,18 +262,31 @@ public class AdminController : Controller
             query = query.Where(t => t.Estado == estado);
         }
 
-        var turnos = await query.ToListAsync();
+       var turnos = await query.ToListAsync();
 
         turnos = turnos
             .OrderBy(t => t.Franja.Fecha)
             .ThenBy(t => t.Franja.HoraInicio)
             .ToList();
 
+        var lista = turnos.Select(t => new TurnoAdminViewModel
+        {
+            Id = t.Id,
+            MascotaId = t.MascotaId,
+            Mascota = t.Mascota.Nombre,
+            Cliente = t.Cliente.Nombre + " " + t.Cliente.Apellido,
+            Veterinario = t.Empleado.Usuario.Nombre + " " + t.Empleado.Usuario.Apellido,
+            Fecha = t.Franja.Fecha,
+            HoraInicio = t.Franja.HoraInicio,
+            Estado = t.Estado,
+            Precio = t.PrecioFinal
+        });
+
         ViewBag.Veterinarios = await _context.Empleados
             .Include(e => e.Usuario)
             .ToListAsync();
 
-        return View(turnos);
+        return View(lista);
     }
 
     public async Task<IActionResult> MarcarAtendido(int id)
