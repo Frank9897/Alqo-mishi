@@ -69,6 +69,8 @@ public class TurnoServicio
         int franjaId,
         string observaciones)
     {
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+
         var franja = await _context.Franjas
             .Include(f => f.Turnos)
             .FirstOrDefaultAsync(f => f.Id == franjaId);
@@ -76,9 +78,10 @@ public class TurnoServicio
         if (franja == null)
             return false;
 
-        var turnosOcupados = franja.Turnos.Count(t => t.Estado != "Cancelado");
+        var ocupados = await _context.Turnos
+            .CountAsync(t => t.FranjaId == franjaId && t.Estado != "Cancelado");
 
-        if (turnosOcupados >= franja.Capacidad)
+        if (ocupados >= franja.Capacidad)
             return false;
 
         var turno = new Turno
@@ -94,6 +97,8 @@ public class TurnoServicio
         _context.Turnos.Add(turno);
 
         await _context.SaveChangesAsync();
+
+        await transaction.CommitAsync();
 
         return true;
     }

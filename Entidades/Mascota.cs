@@ -1,15 +1,22 @@
+using System.ComponentModel.DataAnnotations;
 namespace AlqoMishi.Entidades;
 
 public class Mascota
 {
     public int Id { get; set; }
 
+    [Required]
+    [StringLength(100)]
     public string Nombre { get; set; }
 
+    [Range(0, 100)]
     public int Edad { get; set; }
 
+    [Required]
+    [StringLength(50)]
     public string Especie { get; set; }
 
+    [StringLength(50)]
     public string Raza { get; set; }
 
     public string Sexo { get; set; }

@@ -6,7 +6,7 @@ using AlqoMishi.Entidades;
 using AlqoMishi.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-
+using Microsoft.AspNetCore.Identity;
 namespace AlqoMishi.Controllers;
 
 [AllowAnonymous]
@@ -14,13 +14,16 @@ public class TurnosController : Controller
 {
     private readonly TurnoServicio _turnoServicio;
     private readonly AlqoMishiDbContext _context;
+    private readonly UserManager<Usuario> _userManager;
 
     public TurnosController(
         TurnoServicio turnoServicio,
-        AlqoMishiDbContext context)
+        AlqoMishiDbContext context,
+        UserManager<Usuario> userManager)
     {
         _turnoServicio = turnoServicio;
         _context = context;
+        _userManager = userManager;
     }
 
     public IActionResult Index()
@@ -78,23 +81,30 @@ public class TurnosController : Controller
 
         int usuarioId;
 
-        // USUARIO LOGUEADO
-        if (User.Identity != null && User.Identity.IsAuthenticated)
+        if (User?.Identity?.IsAuthenticated == true)
         {
             usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
         }
         else
         {
-            // USUARIO ANÓNIMO
-            var anonimo = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == "anonimo@alqomishi.com");
+            var anon = await _userManager.FindByEmailAsync("anonimo@alqomishi.com");
 
-            if (anonimo == null)
-                return BadRequest("Usuario anónimo no encontrado");
+            if (anon == null)
+            {
+                anon = new Usuario
+                {
+                    UserName = "anonimo@alqomishi.com",
+                    Email = "anonimo@alqomishi.com",
+                    Nombre = "Cliente",
+                    Apellido = "Anonimo",
+                    EmailConfirmed = true
+                };
 
-            usuarioId = anonimo.Id;
+                await _userManager.CreateAsync(anon, "Anonimo123!");
+            }
+
+            usuarioId = anon.Id;
         }
-
         var mascota = await _turnoServicio.CrearMascotaAsync(
             dto.Mascota ?? "",
             dto.Especie ?? "",

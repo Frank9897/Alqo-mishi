@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using AlqoMishi.Entidades
 @inject UserManager<Usuario> UserManager
+@inject IConfiguration Configuration
 
 <!DOCTYPE html>
 <html lang="es">
@@ -262,4 +263,50 @@ Política de privacidad
 @await RenderSectionAsync("Scripts", required: false)
 
 </body>
+
+@{
+    var telefono = Configuration["Contacto:WhatsApp"];
+    var linkWhatsApp = $"https://wa.me/{telefono}?text=Hola%20quiero%20consultar%20sobre%20un%20turno";
+}
+
+<a href="@linkWhatsApp"
+   target="_blank"
+   class="whatsapp-btn"
+   title="Contactar por WhatsApp">
+    💬
+</a>
+
+<style>
+.whatsapp-btn
+{
+position: fixed;
+bottom: 25px;
+right: 25px;
+
+width: 60px;
+height: 60px;
+
+background: #25D366;
+color: white;
+
+font-size: 28px;
+
+display: flex;
+align-items: center;
+justify-content: center;
+
+border-radius: 50%;
+box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+
+text-decoration: none;
+
+z-index: 9999;
+}
+
+.whatsapp-btn:hover
+{
+background:#1ebe5d;
+}
+</style>
+
 </html>
