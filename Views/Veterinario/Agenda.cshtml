@@ -1,20 +1,25 @@
 @model List<AlqoMishi.Entidades.Turno>
 
-<h2>Agenda del día</h2>
+<h2 class="mb-4">🩺 Agenda del veterinario</h2>
 
-<table class="table table-striped">
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No hay turnos para hoy.
+    </div>
+}
+else
+{
+<table class="table table-striped shadow-sm">
 
 <thead>
-
 <tr>
-
 <th>Hora</th>
 <th>Mascota</th>
 <th>Dueño</th>
-<th>Acción</th>
-
+<th>Estado</th>
+<th>Acciones</th>
 </tr>
-
 </thead>
 
 <tbody>
@@ -28,22 +33,49 @@
 </td>
 
 <td>
-@turno.Mascota.Nombre
-(@turno.Mascota.Especie)
+🐾 @turno.Mascota.Nombre
 </td>
 
 <td>
-@turno.Cliente.Nombre
+@turno.Mascota.Propietario.Nombre
 </td>
 
 <td>
 
-<a class="btn btn-primary btn-sm"
-asp-controller="Turnos"
-asp-action="Detalle"
+@if(turno.Estado == "Reservado")
+{
+<span class="badge bg-primary">Reservado</span>
+}
+
+@if(turno.Estado == "En espera")
+{
+<span class="badge bg-warning text-dark">En espera</span>
+}
+
+@if(turno.Estado == "Atendido")
+{
+<span class="badge bg-success">Atendido</span>
+}
+
+</td>
+
+<td>
+
+<a class="btn btn-sm btn-success"
+asp-controller="Admin"
+asp-action="Atender"
 asp-route-id="@turno.Id">
 
-Abrir
+Atender
+
+</a>
+
+<a class="btn btn-sm btn-secondary"
+asp-controller="Admin"
+asp-action="Historial"
+asp-route-mascotaId="@turno.MascotaId">
+
+Historial
 
 </a>
 
@@ -54,4 +86,5 @@ Abrir
 
 </tbody>
 
-</table>    
+</table>
+}
