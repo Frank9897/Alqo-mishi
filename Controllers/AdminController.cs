@@ -237,7 +237,7 @@ public class AdminController : Controller
         return RedirectToAction("Empleados");
     }
 
-    public async Task<IActionResult> Turnos(DateTime? fecha, int? veterinarioId, string estado)
+    public async Task<IActionResult> Turnos(DateTime? fecha, int? veterinarioId, string estado, string mascota)
     {
         var query = _context.Turnos
             .Include(t => t.Mascota)
@@ -260,6 +260,11 @@ public class AdminController : Controller
         if (!string.IsNullOrEmpty(estado))
         {
             query = query.Where(t => t.Estado == estado);
+        }
+        
+        if (!string.IsNullOrEmpty(mascota))
+        {
+            query = query.Where(t => t.Mascota.Nombre.Contains(mascota));
         }
 
        var turnos = await query.ToListAsync();

@@ -2,16 +2,20 @@
 
 <h2>Historial de turnos</h2>
 
-<form method="get" class="row mb-4">
+<div class="card shadow-sm mb-4">
 
-<div class="col-md-3">
-<label>Fecha</label>
-<input type="date" name="fecha" class="form-control" />
+<div class="card-body">
+
+<form method="get" class="row g-3">
+
+<div class="col-md-3 col-12">
+<label class="form-label">Fecha</label>
+<input type="date" name="fecha" class="form-control">
 </div>
 
-<div class="col-md-3">
-<label>Veterinario</label>
-<select name="veterinarioId" class="form-control">
+<div class="col-md-3 col-12">
+<label class="form-label">Veterinario</label>
+<select name="veterinarioId" class="form-select">
 
 <option value="">Todos</option>
 
@@ -25,9 +29,9 @@
 </select>
 </div>
 
-<div class="col-md-3">
-<label>Estado</label>
-<select name="estado" class="form-control">
+<div class="col-md-2 col-12">
+<label class="form-label">Estado</label>
+<select name="estado" class="form-select">
 
 <option value="">Todos</option>
 <option>Reservado</option>
@@ -38,18 +42,32 @@
 </select>
 </div>
 
-<div class="col-md-3 d-flex align-items-end">
+<div class="col-md-2 col-12">
+<label class="form-label">Mascota</label>
+<input type="text"
+name="mascota"
+class="form-control"
+placeholder="Buscar...">
+</div>
+
+<div class="col-md-2 col-12 d-flex align-items-end gap-2">
 
 <button class="btn btn-primary w-100">
 Filtrar
 </button>
-<a href="/Admin/Turnos" class="btn btn-secondary mt-2">
-Limpiar filtros
+
+<a href="/Admin/Turnos" class="btn btn-outline-secondary w-100">
+Limpiar
 </a>
+
 </div>
 
 </form>
 
+</div>
+</div>
+
+<div class="table-responsive">
 <table class="table table-striped">
 
 <thead>
@@ -81,7 +99,28 @@ Limpiar filtros
 
 <td>@turno.HoraInicio</td>
 
-<td>@turno.Estado</td>
+<td>
+   @if (turno.Estado == "Reservado")
+{
+<span class="badge bg-primary">Reservado</span>
+}
+
+@if (turno.Estado == "En espera")
+{
+<span class="badge bg-warning text-dark">En espera</span>
+}
+
+@if (turno.Estado == "Atendido")
+{
+<span class="badge bg-success">Atendido</span>
+}
+
+@if (turno.Estado == "Cancelado")
+{
+<span class="badge bg-danger">Cancelado</span>
+}
+
+</td>
 
 <td>$@turno.Precio</td>
 
@@ -130,3 +169,4 @@ Limpiar filtros
 </tbody>
 
 </table>
+</div>
