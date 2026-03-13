@@ -1,0 +1,33 @@
+@model List<AlqoMishi.Entidades.Usuario>
+
+<h2>Usuarios del sistema</h2>
+
+<table class="table">
+
+<tr>
+<th>Nombre</th>
+<th>Email</th>
+<th>Acciones</th>
+</tr>
+
+@foreach (var u in Model)
+{
+<tr>
+
+<td>@u.Nombre @u.Apellido</td>
+<td>@u.Email</td>
+
+<td>
+<a asp-action="EditarUsuario"
+asp-route-id="@u.Id"
+class="btn btn-sm btn-primary">
+
+Editar
+
+</a>
+</td>
+
+</tr>
+}
+
+</table>

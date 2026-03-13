@@ -395,4 +395,11 @@ public class AdminController : Controller
 
         return View(mascota);
     }
+
+    public async Task<IActionResult> Usuarios()
+    {
+        var usuarios = await _userManager.Users.ToListAsync();
+
+        return View(usuarios);
+    }
 }
