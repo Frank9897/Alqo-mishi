@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AlqoMishi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f531ef96558f913f3f4f80d1c15c8fa86aa6daa7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0a8966f509700ced94343914a805aadd0398964b")]
 [assembly: System.Reflection.AssemblyProductAttribute("AlqoMishi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AlqoMishi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

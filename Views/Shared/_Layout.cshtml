@@ -3,6 +3,7 @@
 @inject UserManager<Usuario> UserManager
 @inject IConfiguration Configuration
 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -155,7 +156,14 @@ Mi agenda
 
 <li class="nav-item d-flex align-items-center me-3 text-light">
 
-Hola @(User.FindFirst("Nombre")?.Value ?? User.Identity.Name)
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
+
+@if (user != null)
+{
+<span>Hola @user.Nombre @user.Apellido</span>
+}
 
 </li>
 
