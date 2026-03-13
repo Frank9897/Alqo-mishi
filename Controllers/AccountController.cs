@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using AlqoMishi.Entidades;
 using AlqoMishi.ViewModels;
-
+using System.Security.Claims;
 namespace AlqoMishi.Controllers;
 
 public class AccountController : Controller
@@ -40,7 +40,18 @@ public class AccountController : Controller
             false);
 
         if (resultado.Succeeded)
+        {
+            var usuario = await _userManager.FindByEmailAsync(model.Email);
+
+            var claims = new List<Claim>
+            {
+                new Claim("Nombre", usuario.Nombre + " " + usuario.Apellido)
+            };
+
+            await _userManager.AddClaimsAsync(usuario, claims);
+
             return RedirectToAction("Index","Home");
+        }
 
         ModelState.AddModelError("","Credenciales incorrectas");
 
