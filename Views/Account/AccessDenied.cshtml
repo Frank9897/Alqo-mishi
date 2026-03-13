@@ -1,5 +1,51 @@
-<h2>Acceso denegado</h2>
+@{
+    ViewData["Title"] = "Acceso denegado";
+    Layout = "_Layout";
+}
 
-<p>No tienes permiso para acceder a esta página.</p>
+<div class="container text-center mt-5">
 
-<a href="/" class="btn btn-primary">Volver al inicio</a>
+    <div class="card shadow-lg p-4">
+
+        <div class="mb-4">
+
+            <i class="bi bi-shield-lock text-danger" style="font-size:70px;"></i>
+
+        </div>
+
+        <h2 class="text-danger mb-3">
+            Acceso denegado
+        </h2>
+
+        <p class="text-muted">
+
+            No tienes permisos para acceder a esta página.
+
+        </p>
+
+        <hr>
+
+        <div class="mt-3">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="btn btn-primary me-2">
+
+                <i class="bi bi-house"></i>
+                Ir al inicio
+
+            </a>
+
+            <button onclick="history.back()"
+                    class="btn btn-secondary">
+
+                <i class="bi bi-arrow-left"></i>
+                Volver
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

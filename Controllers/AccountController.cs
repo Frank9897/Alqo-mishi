@@ -111,4 +111,47 @@ public class AccountController : Controller
 
         return RedirectToAction("Index","Home");
     }
+
+    [HttpGet]
+    public IActionResult RecuperarPassword()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> RecuperarPassword(RecuperarPasswordViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var usuario = await _userManager.FindByEmailAsync(model.Email);
+
+        if (usuario == null)
+        {
+            ModelState.AddModelError("", "No existe un usuario con ese email");
+            return View(model);
+        }
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(usuario);
+
+        var resultado = await _userManager.ResetPasswordAsync(
+            usuario,
+            token,
+            model.NuevaPassword
+        );
+
+        if (!resultado.Succeeded)
+        {
+            foreach (var error in resultado.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
+            return View(model);
+        }
+
+        ViewBag.Mensaje = "Contraseña actualizada correctamente";
+
+        return View();
+    }
 }
