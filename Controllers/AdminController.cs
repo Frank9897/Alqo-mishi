@@ -416,4 +416,130 @@ public class AdminController : Controller
 
         return View(usuarios);
     }
+
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> EditarUsuario(int id)
+    {
+        var usuario = await _userManager.FindByIdAsync(id.ToString());
+
+        if (usuario == null)
+            return NotFound();
+
+        var rolesUsuario = await _userManager.GetRolesAsync(usuario);
+
+        ViewBag.Roles = new List<string>
+        {
+            "Admin",
+            "Empleado",
+            "Cliente"
+        };
+
+        ViewBag.RolActual = rolesUsuario.FirstOrDefault();
+
+        return View(usuario);
+    }
+
+    [Authorize(Roles = "Admin")]
+[HttpPost]
+public async Task<IActionResult> EditarUsuario(Usuario usuario, string rol)
+{
+    var userDb = await _userManager.FindByIdAsync(usuario.Id.ToString());
+
+    if (userDb == null)
+        return NotFound();
+
+    // actualizar datos
+    userDb.Nombre = usuario.Nombre;
+    userDb.Apellido = usuario.Apellido;
+    userDb.Email = usuario.Email;
+    userDb.UserName = usuario.Email;
+
+    await _userManager.UpdateAsync(userDb);
+
+    // obtener roles actuales
+    var rolesActuales = await _userManager.GetRolesAsync(userDb);
+
+    // eliminar roles actuales
+    await _userManager.RemoveFromRolesAsync(userDb, rolesActuales);
+
+    // asignar nuevo rol
+    await _userManager.AddToRoleAsync(userDb, rol);
+
+    // opcional: sincronizar tu campo RolSistema
+    userDb.RolSistema = rol;
+    await _userManager.UpdateAsync(userDb);
+
+    return RedirectToAction("Usuarios");
+}
+
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> EliminarUsuario(int id)
+    {
+        var usuario = await _userManager.FindByIdAsync(id.ToString());
+
+        if (usuario == null)
+            return NotFound();
+
+        await _userManager.DeleteAsync(usuario);
+
+        return RedirectToAction("Usuarios");
+    }
+
+    [Authorize(Roles = "Admin")]
+    public IActionResult CrearUsuario()
+    {
+        ViewBag.Roles = new List<string>
+        {
+            "Admin",
+            "Empleado",
+            "Cliente"
+        };
+
+        return View();
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    public async Task<IActionResult> CrearUsuario(CrearUsuarioViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var usuario = new Usuario
+        {
+            UserName = model.Email,
+            Email = model.Email,
+            Nombre = model.Nombre,
+            Apellido = model.Apellido,
+            RolSistema = model.Rol
+        };
+
+        var resultado = await _userManager.CreateAsync(usuario, model.Password);
+
+        if (!resultado.Succeeded)
+        {
+            foreach (var error in resultado.Errors)
+                ModelState.AddModelError("", error.Description);
+
+            return View(model);
+        }
+
+        await _userManager.AddToRoleAsync(usuario, model.Rol);
+
+        // SI ES EMPLEADO CREAR REGISTRO EN TABLA EMPLEADOS
+        if(model.Rol == "Empleado")
+        {
+            var empleado = new Empleado
+            {
+                UsuarioId = usuario.Id,
+                Especialidad = model.Especialidad,
+                EstaDisponible = true
+            };
+
+            _context.Empleados.Add(empleado);
+            await _context.SaveChangesAsync();
+        }
+
+        return RedirectToAction("Usuarios");
+    }
 }

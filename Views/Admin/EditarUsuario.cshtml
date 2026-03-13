@@ -1,0 +1,53 @@
+@model AlqoMishi.Entidades.Usuario
+
+<h2>Editar usuario</h2>
+
+<form asp-action="EditarUsuario">
+
+<input type="hidden" asp-for="Id"/>
+
+<div class="mb-3">
+<label>Nombre</label>
+<input asp-for="Nombre" class="form-control"/>
+</div>
+
+<div class="mb-3">
+<label>Apellido</label>
+<input asp-for="Apellido" class="form-control"/>
+</div>
+
+<div class="mb-3">
+<label>Email</label>
+<input asp-for="Email" class="form-control"/>
+</div>
+
+<div class="mb-3">
+
+<label>Rol</label>
+
+<select name="rol" class="form-control">
+
+@foreach(var r in ViewBag.Roles)
+{
+<option value="@r"
+selected="@(ViewBag.RolActual == r)">
+@r
+</option>
+}
+
+</select>
+
+</div>
+
+<button class="btn btn-success">
+Guardar
+</button>
+
+<a asp-action="Usuarios"
+class="btn btn-secondary">
+
+Volver
+
+</a>
+
+</form>

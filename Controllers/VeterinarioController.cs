@@ -7,7 +7,6 @@ using AlqoMishi.Entidades;
 
 namespace AlqoMishi.Controllers;
 
-[Authorize(Roles = "Empleado,Admin")]
 public class VeterinarioController : Controller
 {
     private readonly AlqoMishiDbContext _context;
@@ -17,6 +16,7 @@ public class VeterinarioController : Controller
         _context = context;
     }
 
+    [Authorize(Roles = "Empleado,Admin")]
     public async Task<IActionResult> Agenda()
     {
         var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));

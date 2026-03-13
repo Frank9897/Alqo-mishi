@@ -58,20 +58,54 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    await SeedUsuarioAnonimo(services);
+        await SeedSistema(services);
 }
 
 app.Run();
 
-static async Task SeedUsuarioAnonimo(IServiceProvider services)
+static async Task SeedSistema(IServiceProvider services)
 {
     var userManager = services.GetRequiredService<UserManager<Usuario>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole<int>>>();
 
-    var usuario = await userManager.FindByEmailAsync("anonimo@alqomishi.com");
+    // ROLES
+    string[] roles = { "Admin", "Empleado", "Cliente" };
 
-    if (usuario == null)
+    foreach (var rol in roles)
     {
-        var anonimo = new Usuario
+        if (!await roleManager.RoleExistsAsync(rol))
+        {
+            await roleManager.CreateAsync(new IdentityRole<int>(rol));
+        }
+    }
+
+    // ADMIN
+    var adminEmail = "admin@alqomishi.com";
+
+    var admin = await userManager.FindByEmailAsync(adminEmail);
+
+    if (admin == null)
+    {
+        admin = new Usuario
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            Nombre = "Admin",
+            Apellido = "Sistema",
+            EmailConfirmed = true
+        };
+
+        await userManager.CreateAsync(admin, "Admin123!");
+
+        await userManager.AddToRoleAsync(admin, "Admin");
+    }
+
+    // USUARIO ANONIMO
+    var anonimo = await userManager.FindByEmailAsync("anonimo@alqomishi.com");
+
+    if (anonimo == null)
+    {
+        anonimo = new Usuario
         {
             UserName = "anonimo@alqomishi.com",
             Email = "anonimo@alqomishi.com",
@@ -81,5 +115,7 @@ static async Task SeedUsuarioAnonimo(IServiceProvider services)
         };
 
         await userManager.CreateAsync(anonimo, "Anonimo123!");
+
+        await userManager.AddToRoleAsync(anonimo, "Cliente");
     }
 }

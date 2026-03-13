@@ -1,0 +1,85 @@
+@model AlqoMishi.ViewModels.CrearUsuarioViewModel
+
+<h2>Nuevo usuario</h2>
+
+<form asp-action="CrearUsuario">
+
+<div class="mb-3">
+<label>Nombre</label>
+<input asp-for="Nombre" class="form-control"/>
+</div>
+
+<div class="mb-3">
+<label>Apellido</label>
+<input asp-for="Apellido" class="form-control"/>
+</div>
+
+<div class="mb-3">
+<label>Email</label>
+<input asp-for="Email" class="form-control"/>
+</div>
+
+<div class="mb-3">
+<label>Contraseña</label>
+<input asp-for="Password" class="form-control"/>
+</div>
+
+<div class="mb-3">
+<label>Rol</label>
+
+<select asp-for="Rol" class="form-control">
+
+@foreach(var r in ViewBag.Roles)
+{
+<option value="@r">@r</option>
+}
+
+</select>
+<div class="mb-3" id="especialidadDiv" style="display:none;">
+
+<label>Especialidad</label>
+
+<input asp-for="Especialidad"
+       class="form-control"
+       placeholder="Ej: cirugía, dermatología, general">
+
+</div>
+</div>
+
+<button class="btn btn-success">
+
+Crear usuario
+
+</button>
+
+<a asp-action="Usuarios"
+class="btn btn-secondary">
+
+Volver
+
+</a>
+
+</form>
+
+@section Scripts{
+
+<script>
+
+const rolSelect = document.querySelector("[name='Rol']");
+const especialidadDiv = document.getElementById("especialidadDiv");
+
+function toggleEspecialidad()
+{
+    if(rolSelect.value === "Empleado")
+        especialidadDiv.style.display = "block";
+    else
+        especialidadDiv.style.display = "none";
+}
+
+rolSelect.addEventListener("change", toggleEspecialidad);
+
+toggleEspecialidad();
+
+</script>
+
+}
