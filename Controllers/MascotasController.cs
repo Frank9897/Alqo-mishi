@@ -92,7 +92,7 @@ public class MascotasController : Controller
     public async Task<IActionResult> Eliminar(int id)
     {
         var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
+    
         var mascota = await _context.Mascotas
             .FirstOrDefaultAsync(m => m.Id == id && m.PropietarioId == usuarioId);
 

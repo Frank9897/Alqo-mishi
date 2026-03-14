@@ -79,12 +79,28 @@ public class TurnosController : Controller
         if (dto == null)
             return BadRequest("Datos inválidos");
 
-        var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        int clienteId;
+
+        if (!string.IsNullOrEmpty(userIdClaim))
+        {
+            clienteId = int.Parse(userIdClaim);
+        }
+        else
+        {
+            var anonimo = await _userManager.FindByEmailAsync("anonimo@alqomishi.com");
+
+            if (anonimo == null)
+                return BadRequest("Usuario anónimo no configurado");
+
+            clienteId = anonimo.Id;
+        }
 
         Mascota mascota = null;
 
         // SI seleccionó mascota existente
-        if (dto.MascotaId != null)
+        if (dto.MascotaId != null && dto.MascotaId > 0)
         {
             mascota = await _context.Mascotas
                 .FirstOrDefaultAsync(m => m.Id == dto.MascotaId);
@@ -94,35 +110,44 @@ public class TurnosController : Controller
         }
         else
         {
-            // Crear mascota nueva
+            // Validar que haya datos mínimos
+            if (string.IsNullOrWhiteSpace(dto.Mascota))
+            {
+                return BadRequest("Debe ingresar el nombre de la mascota");
+            }
+
             mascota = new Mascota
             {
                 Nombre = dto.Mascota,
-                Especie = dto.Especie,
-                Raza = dto.Raza,
+                Especie = dto.Especie ?? "",
+                Raza = dto.Raza ?? "",
                 Edad = dto.Edad ?? 0,
-                Sexo = dto.Sexo,
-                PropietarioId = usuarioId
+                Sexo = dto.Sexo ?? "",
+                Notas = dto.Notas ?? "",
+                PropietarioId = clienteId
             };
 
             _context.Mascotas.Add(mascota);
             await _context.SaveChangesAsync();
         }
-
         var franja = await _context.Franjas
             .FirstOrDefaultAsync(f => f.Id == dto.FranjaId);
 
         if (franja == null)
             return BadRequest("Franja no encontrada");
-
+            
+        if (franja.Capacidad <= await _context.Turnos.CountAsync(t => t.FranjaId == franja.Id))
+        {
+            return BadRequest("Esta franja ya está completa");
+        }
         var turno = new Turno
         {
             MascotaId = mascota.Id,
-            ClienteId = usuarioId,
+            ClienteId = clienteId,
             EmpleadoId = franja.EmpleadoId,
             FranjaId = franja.Id,
             Estado = "Reservado",
-            PrecioFinal = 5000
+            PrecioFinal = franja.Precio
         };
 
         _context.Turnos.Add(turno);

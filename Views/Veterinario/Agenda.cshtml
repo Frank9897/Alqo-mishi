@@ -69,7 +69,10 @@ asp-route-id="@turno.Id">
 Atender
 
 </a>
-
+@if (User.IsInRole("Admin") || !User.Identity.IsAuthenticated)
+{
+    
+}
 <a class="btn btn-sm btn-secondary"
 asp-controller="Admin"
 asp-action="Historial"
