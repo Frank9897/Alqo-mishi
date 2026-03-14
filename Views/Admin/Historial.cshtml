@@ -73,7 +73,7 @@
 
 </a>
 
-}else if (User.IsInRole("Empleado,Admin"))
+}else if (User.IsInRole("Empleado") || User.IsInRole("Admin"))
 {
    <a asp-controller="Veterinario"
    asp-action="Agenda"
