@@ -73,7 +73,7 @@
 
 </a>
 
-}else if (User.IsInRole("Empleado") || User.IsInRole("Admin"))
+}else if (User.IsInRole("Empleado"))
 {
    <a asp-controller="Veterinario"
    asp-action="Agenda"
@@ -83,6 +83,15 @@
 
 </a>
 
+}else if( User.IsInRole("Admin"))
+{
+    <a asp-controller="Admin"
+   asp-action="Turnos"
+   class="btn btn-outline-secondary">
+
+⬅ Volver a turnos
+
+</a>
 }
 
 </div>
