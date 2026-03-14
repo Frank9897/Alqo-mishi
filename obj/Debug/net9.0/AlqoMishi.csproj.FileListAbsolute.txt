@@ -211,3 +211,4 @@ C:\Users\franc\Documents\Estudio\CHAMBA\ProyectoVeterinaria\AlqoMishi\obj\Debug\
 C:\Users\franc\Documents\Estudio\CHAMBA\ProyectoVeterinaria\AlqoMishi\obj\Debug\net9.0\compressed\4llpp3pbut-jjsuc0puko.gz
 C:\Users\franc\Documents\Estudio\CHAMBA\ProyectoVeterinaria\AlqoMishi\obj\Debug\net9.0\compressed\ua91wrfjxj-9vr69e8ynj.gz
 C:\Users\franc\Documents\Estudio\CHAMBA\ProyectoVeterinaria\AlqoMishi\obj\Debug\net9.0\compressed\mlgk34ujdf-ttnafmwzjb.gz
+C:\Users\franc\Documents\Estudio\CHAMBA\ProyectoVeterinaria\AlqoMishi\obj\Debug\net9.0\compressed\e4j6oc6ieg-xmea15okwz.gz

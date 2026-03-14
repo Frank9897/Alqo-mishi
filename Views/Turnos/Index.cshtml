@@ -214,16 +214,19 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: function(info) {
 
             if(info.event.title.includes("COMPLETO")){
-                toastError("Turno no disponible","Esta franja ya no tiene cupos disponibles");
+                toastError(
+                    "Sin cupos",
+                    "Esta franja horaria ya está completa"
+                );
                 return;
             }
 
-            toastSuccess(
-                "Turno seleccionado",
-                "Puedes continuar con la reserva"
+            toastInfo(
+                "Turno disponible",
+                "Puedes reservar este horario"
             );
 
-        }
+        
 
             franjaSeleccionada = info.event.id;
 
@@ -322,19 +325,27 @@ document.getElementById("btnConfirmar")
 
     if(res.ok){
 
-        alert("Turno reservado correctamente");
+            toastSuccess(
+                "Turno reservado",
+                "La reserva fue registrada correctamente"
+            );
 
-        location.reload();
+            setTimeout(()=>{
+                location.reload();
+            },1500);
 
-    }else{
+        }else{
 
-        const error = await res.text();
+            const error = await res.text();
 
-        alert(error);
+            toastError(
+                "No se pudo reservar",
+                error
+            );
 
-    }
+        }
 
-});
+    });
 
 });
 
