@@ -63,7 +63,8 @@
 </div>
 
 <div class="mt-4">
-
+@if(User.IsInRole("Cliente"))
+{
 <a asp-controller="Mascotas"
    asp-action="MisMascotas"
    class="btn btn-outline-secondary">
@@ -71,5 +72,17 @@
 ⬅ Volver a turnos
 
 </a>
+
+}else if (User.IsInRole("Empleado,Admin"))
+{
+   <a asp-controller="Veterinario"
+   asp-action="Agenda"
+   class="btn btn-outline-secondary">
+
+⬅ Volver a turnos
+
+</a>
+
+}
 
 </div>

@@ -397,12 +397,11 @@ public class AdminController : Controller
         if (mascota == null)
             return NotFound();
 
-        var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var usuarioId = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : 0;
 
-        if(mascota == null)
-            return NotFound();
-
-        if(!User.IsInRole("Admin") && mascota.PropietarioId != usuarioId)
+        if (!User.IsInRole("Admin") && 
+            !User.IsInRole("Empleado") && 
+            mascota.PropietarioId != usuarioId)
         {
             return Forbid();
         }

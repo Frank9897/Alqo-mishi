@@ -69,10 +69,8 @@ asp-route-id="@turno.Id">
 Atender
 
 </a>
-@if (User.IsInRole("Admin") || !User.Identity.IsAuthenticated)
+@if (User.IsInRole("Admin") || !User.Identity.IsAuthenticated || User.IsInRole(role: "Empleado")) 
 {
-    
-}
 <a class="btn btn-sm btn-secondary"
 asp-controller="Admin"
 asp-action="Historial"
@@ -81,6 +79,7 @@ asp-route-mascotaId="@turno.MascotaId">
 Historial
 
 </a>
+}
 
 </td>
 
