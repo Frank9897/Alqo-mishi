@@ -1,0 +1,202 @@
+/* wwwroot/css/site.palette.css
+   Palette and global styles extracted from logo.jpg
+   - Variables
+   - Buttons, icons, form controls
+   - Toast / popup styles
+*/
+
+:root{
+  /* Palette from logo.jpg */
+  --primary: #f39b5b;
+  --primary-variant: #f29859;
+  --accent: #f8ac72;
+  --accent-variant: #faab70;
+  --muted: #f19d5f;
+  --dark: #855532;
+  --bg: #fffaf7;
+
+  --text-on-primary: #ffffff;
+  --text-default: #3b2b21; /* fallback text color */
+  --radius: 10px;
+  --shadow-elev: 0 6px 18px rgba(0,0,0,0.08);
+  --toast-duration: 6000ms;
+}
+
+/* Global */
+html, body {
+  background: var(--bg);
+  color: var(--text-default);
+  font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  margin:0;
+  padding:0;
+}
+
+/* Links */
+a {
+  color: var(--primary);
+}
+a:hover { color: var(--primary-variant); }
+
+/* Icon helpers: use for <svg class="icon"> or <i class="icon"> */
+.icon {
+  display:inline-block;
+  width:1.35em;
+  height:1.35em;
+  vertical-align:middle;
+  color: var(--primary); /* for font icons and SVG using currentColor */
+  fill: currentColor;    /* inline SVG will inherit */
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-variant) 100%);
+  color: var(--text-on-primary);
+  border: none;
+  padding: .5rem .9rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow-elev);
+  cursor: pointer;
+  transition: transform .08s ease, box-shadow .12s ease, opacity .12s;
+}
+.btn-primary:hover { transform: translateY(-1px); }
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 8px;
+  padding: .45rem .8rem;
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--primary);
+  border-radius: 8px;
+  padding: .35rem .6rem;
+}
+
+/* Form fields */
+input[type="text"], input[type="password"], textarea, select {
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #fff;
+  padding: .55rem .7rem;
+  border-radius: 8px;
+  box-shadow: none;
+  transition: box-shadow .12s ease, border-color .12s ease;
+}
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  box-shadow: 0 6px 20px rgba(243,155,91,0.08);
+  border-color: var(--primary-variant);
+}
+
+/* Cards */
+.card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-elev);
+  padding: 1rem;
+}
+
+/* Typography small helpers */
+.muted { color: rgba(0,0,0,0.5); }
+.lead { font-size:1.05rem; color: rgba(0,0,0,0.85); }
+
+/* Toast / popup styles */
+.toast-wrapper {
+  position: fixed;
+  top: 1.1rem;
+  right: 1.1rem;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  max-width: 360px;
+  pointer-events: none; /* allow clicks to pass to toasts only */
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  gap: .7rem;
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  padding: .7rem .9rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  border-left: 6px solid var(--primary);
+  min-width: 260px;
+  overflow: hidden;
+  transform-origin: top right;
+  animation: toastIn .18s ease;
+}
+
+.toast .toast-icon {
+  min-width: 40px;
+  min-height: 40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(243,155,91,0.12), rgba(243,155,91,0.06));
+  color: var(--primary);
+  flex-shrink:0;
+}
+
+.toast .toast-body {
+  flex: 1 1 auto;
+  display:flex;
+  flex-direction:column;
+  gap: 2px;
+}
+
+.toast-title {
+  font-weight: 700;
+  font-size: .95rem;
+  color: var(--dark);
+}
+.toast-message {
+  font-size: .86rem;
+  color: rgba(0,0,0,0.7);
+}
+
+/* Types */
+.toast.success { border-left-color: var(--accent); }
+.toast.info    { border-left-color: var(--primary); }
+.toast.error   { border-left-color: #c14b3a; } /* slightly red-ish; keep icon tinted from palette or dark */
+.toast.loading { border-left-color: var(--muted); }
+
+.toast .close-btn {
+  margin-left: .6rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: rgba(0,0,0,0.45);
+  font-size: 1.1rem;
+}
+
+/* small progress bar to show remaining time */
+.toast .progress {
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--primary) 0%, transparent 100%);
+  margin-top: .6rem;
+  width: 100%;
+  transform-origin: left;
+  transition: width linear var(--toast-duration);
+}
+
+/* Animations */
+@keyframes toastIn {
+  from { transform: translateY(-6px) scale(.98); opacity:0 }
+  to { transform: translateY(0) scale(1); opacity:1 }
+}
+
+/* Responsive adapt */
+@media (max-width:480px) {
+  .toast-wrapper { left: 0.6rem; right: 0.6rem; top: .8rem; max-width: calc(100% - 1.2rem); }
+  .toast { min-width: auto; }
+}
+
+/* Utility class to color svg fills when not inline */
+.fill-primary { fill: var(--primary) !important; color: var(--primary) !important; }
