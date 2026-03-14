@@ -278,6 +278,14 @@ Política de privacidad
 
 @await RenderSectionAsync("Scripts", required: false)
 <script src="~/js/toasts.js"></script>
+
+<script>
+var serverToast = '@Html.Raw(TempData["Toast"] ?? "")';
+
+if(serverToast){
+    showToastFromServer(serverToast);
+}
+</script>
 </body>
 
 @{

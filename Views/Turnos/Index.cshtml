@@ -213,15 +213,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         eventClick: function(info) {
 
-        if(info.event.title.includes("COMPLETO")){
-            toastError(
-                "Turno no disponible",
-                "Esta franja ya no tiene cupos disponibles"
-            );
-            return;
-        }
+            if(info.event.title.includes("COMPLETO")){
+                toastError("Turno no disponible","Esta franja ya no tiene cupos disponibles");
+                return;
+            }
 
-    }
+            toastSuccess(
+                "Turno seleccionado",
+                "Puedes continuar con la reserva"
+            );
+
+        }
 
             franjaSeleccionada = info.event.id;
 
