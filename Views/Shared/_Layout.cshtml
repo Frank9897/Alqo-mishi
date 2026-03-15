@@ -241,60 +241,59 @@ Usuarios
 
 @if (User.Identity.IsAuthenticated)
 {
+    var user = await UserManager.GetUserAsync(User);
 
-@{
-var user = await UserManager.GetUserAsync(User);
+    if (user != null)
+    {
+        <li class="nav-item dropdown">
+
+            <a class="nav-link dropdown-toggle nav-user-dropdown"
+               data-bs-toggle="dropdown"
+               role="button"
+               aria-expanded="false">
+
+                👤 @user.Nombre
+
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end user-menu">
+
+                <li class="dropdown-header">
+                    @user.Nombre @user.Apellido
+                </li>
+
+                @if (User.IsInRole("Cliente"))
+                {
+                    <li>
+                        <a class="dropdown-item"
+                           asp-controller="Mascotas"
+                           asp-action="MisMascotas">
+                           Mis Mascotas
+                        </a>
+                    </li>
+                }
+
+                <li><hr class="dropdown-divider"></li>
+
+                <li>
+                    <form asp-controller="Account"
+                          asp-action="CerrarSesion"
+                          method="post"
+                          class="m-0">
+
+                        <button type="submit" class="dropdown-item text-danger">
+                            Cerrar sesión
+                        </button>
+
+                    </form>
+                </li>
+
+            </ul>
+
+        </li>
+    }
 }
 
-@if (user != null)
-{
-
-<li class="nav-item dropdown">
-
-<a class="nav-link dropdown-toggle nav-user-dropdown"
-   data-bs-toggle="dropdown"
-   role="button">
-
-👤 @user.Nombre
-
-</a>
-
-<ul class="dropdown-menu dropdown-menu-end user-menu">
-
-<li class="dropdown-header">
-@user.Nombre @user.Apellido
-</li>
-
-@if (User.IsInRole("Cliente"))
-{
-<li>
-<a class="dropdown-item"
-asp-controller="Mascotas"
-asp-action="MisMascotas">
-Mis Mascotas
-</a>
-</li>
-}
-
-<li>
-<form asp-controller="Account"
-asp-action="CerrarSesion"
-method="post">
-
-<button class="dropdown-item text-danger">
-Cerrar sesión
-</button>
-
-</form>
-</li>
-
-</ul>
-
-</li>
-
-}
-
-}
 else
 {
 
