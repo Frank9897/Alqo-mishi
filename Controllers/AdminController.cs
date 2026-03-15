@@ -541,4 +541,75 @@ public async Task<IActionResult> EditarUsuario(Usuario usuario, string rol)
 
         return RedirectToAction("Usuarios");
     }
+
+
+
+    public async Task<IActionResult> HistorialAtenciones()
+    {
+        var hoy = DateTime.Today;
+
+        var inicioSemana = hoy.AddDays(-(int)hoy.DayOfWeek);
+        var inicioMes = new DateTime(hoy.Year, hoy.Month, 1);
+
+        var turnos = _context.Turnos
+            .Include(t => t.Franja)
+            .Include(t => t.Empleado)
+            .ThenInclude(e => e.Usuario)
+            .Where(t => t.EmpleadoId != null && t.Estado == "Atendido");
+
+        var empleados = await _context.Empleados
+            .Include(e => e.Usuario)
+            .ToListAsync();
+
+        var lista = new List<AtencionEmpleadoVM>();
+
+        foreach (var emp in empleados)
+        {
+            var hoyCount = await turnos
+                .Where(t =>
+                    t.EmpleadoId == emp.Id &&
+                    t.Franja.Fecha.Date == hoy
+                )
+                .CountAsync();
+
+            var semanaCount = await turnos
+                .Where(t =>
+                    t.EmpleadoId == emp.Id &&
+                    t.Franja.Fecha >= inicioSemana
+                )
+                .CountAsync();
+
+            var mesCount = await turnos
+                .Where(t =>
+                    t.EmpleadoId == emp.Id &&
+                    t.Franja.Fecha >= inicioMes
+                )
+                .CountAsync();
+
+            lista.Add(new AtencionEmpleadoVM
+            {
+                EmpleadoId = emp.Id,
+                NombreEmpleado = emp.Usuario.Nombre + " " + emp.Usuario.Apellido,
+                Hoy = hoyCount,
+                Semana = semanaCount,
+                Mes = mesCount
+            });
+        }
+
+        var top = lista.OrderByDescending(x => x.Mes).FirstOrDefault();
+
+        var vm = new HistorialAtencionesVM
+        {
+            TotalHoy = lista.Sum(x => x.Hoy),
+            TotalSemana = lista.Sum(x => x.Semana),
+            TotalMes = lista.Sum(x => x.Mes),
+            TopEmpleado = top?.NombreEmpleado ?? "-",
+            TopCantidad = top?.Mes ?? 0,
+            Empleados = lista
+        };
+
+        return View(vm);
+    }
+
+
 }

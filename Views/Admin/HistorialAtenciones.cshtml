@@ -1,0 +1,65 @@
+@model HistorialAtencionesVM
+
+<h2 class="mb-4">📊 Historial de Atención por Empleado</h2>
+
+<div class="row mb-4">
+
+<div class="col-md-3">
+<div class="card text-center">
+<h5>Hoy</h5>
+<h3>@Model.TotalHoy</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center">
+<h5>Semana</h5>
+<h3>@Model.TotalSemana</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center">
+<h5>Mes</h5>
+<h3>@Model.TotalMes</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card text-center">
+<h5>🏆 Mejor empleado</h5>
+<strong>@Model.TopEmpleado</strong>
+<br />
+<span>@Model.TopCantidad atenciones</span>
+</div>
+</div>
+
+</div>
+
+
+<table class="table table-striped table-hover">
+
+<thead>
+<tr>
+<th>Empleado</th>
+<th>Hoy</th>
+<th>Semana</th>
+<th>Mes</th>
+</tr>
+</thead>
+
+<tbody>
+
+@foreach(var emp in Model.Empleados)
+{
+<tr>
+<td>@emp.NombreEmpleado</td>
+<td>@emp.Hoy</td>
+<td>@emp.Semana</td>
+<td>@emp.Mes</td>
+</tr>
+}
+
+</tbody>
+
+</table>

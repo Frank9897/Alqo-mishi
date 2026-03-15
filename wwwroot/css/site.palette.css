@@ -250,4 +250,16 @@ box-shadow: 0 8px 20px rgba(0,0,0,0.35);
 100% { transform: translateY(0px); }
 }
 
+.card{
+border:none;
+border-radius:12px;
+padding:15px;
+box-shadow:0 4px 14px rgba(0,0,0,0.08);
+}
+
+.card h3{
+color:var(--primary);
+font-weight:700;
+}
+
 
