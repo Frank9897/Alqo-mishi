@@ -1,0 +1,45 @@
+@model List<HistorialAtencionDetalleVM>
+
+<h2 class="mb-4">Historial de Atenciones</h2>
+
+<table class="table table-striped table-hover">
+
+<thead>
+<tr>
+<th>Fecha</th>
+<th>Hora</th>
+<th>Mascota</th>
+<th>Cliente</th>
+<th>Empleado</th>
+<th>Observaciones</th>
+</tr>
+</thead>
+
+<tbody>
+
+@foreach(var h in Model)
+{
+<tr>
+
+<td>@h.Fecha.ToShortDateString()</td>
+
+<td>
+@h.HoraInicio.ToString(@"hh\:mm")
+-
+@h.HoraFin.ToString(@"hh\:mm")
+</td>
+
+<td>@h.Mascota</td>
+
+<td>@h.Cliente</td>
+
+<td>@h.Empleado</td>
+
+<td>@h.Observaciones</td>
+
+</tr>
+}
+
+</tbody>
+
+</table>

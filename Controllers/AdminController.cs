@@ -611,5 +611,33 @@ public async Task<IActionResult> EditarUsuario(Usuario usuario, string rol)
         return View(vm);
     }
 
+    public async Task<IActionResult> HistorialAtencionesDetalle()
+    {
+        var turnos = await _context.Turnos
+            .Include(t => t.Mascota)
+            .Include(t => t.Cliente)
+            .Include(t => t.Franja)
+            .Include(t => t.Empleado)
+            .ThenInclude(e => e.Usuario)
+            .Where(t => t.Estado == "Atendido")
+            .OrderByDescending(t => t.Franja.Fecha)
+            .ToListAsync();
+
+        var lista = turnos.Select(t => new HistorialAtencionDetalleVM
+        {
+            TurnoId = t.Id,
+            Mascota = t.Mascota.Nombre,
+            Cliente = t.Cliente.Nombre + " " + t.Cliente.Apellido,
+            Empleado = t.Empleado.Usuario.Nombre + " " + t.Empleado.Usuario.Apellido,
+            Fecha = t.Franja.Fecha,
+            HoraInicio = t.Franja.HoraInicio,
+            HoraFin = t.Franja.HoraFin,
+            Observaciones = t.Observaciones
+        }).ToList();
+
+        return View(lista);
+    }
+
+
 
 }

@@ -217,7 +217,14 @@ Usuarios
 <a class="dropdown-item"
    asp-controller="Admin"
    asp-action="HistorialAtenciones">
-   Atención por empleado
+   Rendimiento de atención por empleado
+</a>
+</li>
+<li>
+<a class="dropdown-item"
+   asp-controller="Admin"
+   asp-action="HistorialAtencionesDetalle">
+   Historial de Atenciones
 </a>
 </li>
 
@@ -235,7 +242,7 @@ Usuarios
 @if (User.Identity.IsAuthenticated)
 {
 
-<li class="nav-item d-flex align-items-center me-3 text-light">
+<li class="nav-item d-flex align-items-center me-3">
 
 @{
 var user = await UserManager.GetUserAsync(User);
@@ -243,10 +250,13 @@ var user = await UserManager.GetUserAsync(User);
 
 @if (user != null)
 {
-<span>Hola @user.Nombre @user.Apellido</span>
+<span class="nav-user-box">
+👤 Hola @user.Nombre @user.Apellido
+</span>
 }
 
 </li>
+
 
 <li class="nav-item">
 
@@ -254,9 +264,10 @@ var user = await UserManager.GetUserAsync(User);
 asp-action="CerrarSesion"
 method="post">
 
-<button class="btn btn-outline-light btn-sm">
+<button class="btn btn-logout btn-sm">
 Cerrar sesión
 </button>
+
 
 </form>
 
