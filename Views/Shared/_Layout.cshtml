@@ -242,40 +242,62 @@ Usuarios
 @if (User.Identity.IsAuthenticated)
 {
 
-<li class="nav-item d-flex align-items-center me-3">
-
 @{
 var user = await UserManager.GetUserAsync(User);
 }
 
 @if (user != null)
 {
-<span class="nav-user-box">
-👤 Hola @user.Nombre @user.Apellido
-</span>
-}
 
+<li class="nav-item dropdown">
+
+<a class="nav-link dropdown-toggle nav-user-dropdown"
+   data-bs-toggle="dropdown"
+   role="button">
+
+👤 @user.Nombre
+
+</a>
+
+<ul class="dropdown-menu dropdown-menu-end user-menu">
+
+<li class="dropdown-header">
+@user.Nombre @user.Apellido
 </li>
 
+@if (User.IsInRole("Cliente"))
+{
+<li>
+<a class="dropdown-item"
+asp-controller="Mascotas"
+asp-action="MisMascotas">
+Mis Mascotas
+</a>
+</li>
+}
 
-<li class="nav-item">
-
+<li>
 <form asp-controller="Account"
 asp-action="CerrarSesion"
 method="post">
 
-<button class="btn btn-logout btn-sm">
+<button class="dropdown-item text-danger">
 Cerrar sesión
 </button>
 
-
 </form>
+</li>
+
+</ul>
 
 </li>
 
 }
+
+}
 else
 {
+
 
 <li class="nav-item">
 
