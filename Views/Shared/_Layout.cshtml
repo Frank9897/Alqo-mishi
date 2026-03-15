@@ -58,7 +58,7 @@ font-size:14px;
 
 <header>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-alqo shadow-sm">
 
 <div class="container-fluid">
 
@@ -90,7 +90,17 @@ Inicio
 </li>
 
 
-@if (User.IsInRole("Cliente") || !User.Identity.IsAuthenticated)
+@if (!User.Identity.IsAuthenticated)
+{
+<li class="nav-item">
+<a class="nav-link" asp-controller="Turnos" asp-action="Index">
+Turnos
+</a>
+</li>
+}
+
+
+@if (User.IsInRole("Cliente"))
 {
 <li class="nav-item">
 <a class="nav-link" asp-controller="Turnos" asp-action="Index">
@@ -98,54 +108,123 @@ Turnos
 </a>
 </li>
 
-@if (User.Identity.IsAuthenticated)
-{
-<li class="nav-item">
-<a class="nav-link" asp-controller="Mascotas" asp-action="MisMascotas">
-Mascotas
+<li class="nav-item dropdown">
+
+<a class="nav-link dropdown-toggle"
+data-bs-toggle="dropdown">
+
+Mis datos
+
 </a>
-</li>
-}
-}
 
+<ul class="dropdown-menu">
 
-@if (User.IsInRole("Admin"))
-{
-<li class="nav-item">
-<a class="nav-link" asp-controller="Admin" asp-action="Empleados">
-Veterinarios
-</a>
-</li>
-
-<li class="nav-item">
-<a class="nav-link" asp-controller="Admin" asp-action="Franjas">
-Franjas horarias
+<li>
+<a class="dropdown-item"
+asp-controller="Mascotas"
+asp-action="MisMascotas">
+Mis Mascotas
 </a>
 </li>
 
-<li class="nav-item">
-<a class="nav-link" asp-controller="Admin" asp-action="Turnos">
-Turnos
+<li>
+<a class="dropdown-item"
+asp-controller="Turnos"
+asp-action="Historial">
+Historial
 </a>
 </li>
 
-<li class="nav-item">
-<a class="nav-link" asp-controller="Admin" asp-action="Usuarios">
-Usuarios
-</a>
+</ul>
+
 </li>
 }
 
 
 @if (User.IsInRole("Empleado"))
 {
+
+<li class="nav-item">
+<a class="nav-link" asp-controller="Turnos" asp-action="Index">
+Turnos
+</a>
+</li>
+
 <li class="nav-item">
 <a class="nav-link"
-   asp-controller="Veterinario"
-   asp-action="Agenda">
+asp-controller="Veterinario"
+asp-action="Agenda">
 Mi Agenda
 </a>
 </li>
+
+}
+
+
+@if (User.IsInRole("Admin"))
+{
+
+<li class="nav-item">
+<a class="nav-link" asp-controller="Turnos" asp-action="Index">
+Turnos
+</a>
+</li>
+
+<li class="nav-item dropdown">
+
+<a class="nav-link dropdown-toggle"
+data-bs-toggle="dropdown">
+
+Administración
+
+</a>
+
+<ul class="dropdown-menu">
+
+<li>
+<a class="dropdown-item"
+asp-controller="Admin"
+asp-action="Empleados">
+Veterinarios
+</a>
+</li>
+
+<li>
+<a class="dropdown-item"
+asp-controller="Admin"
+asp-action="Franjas">
+Franjas horarias
+</a>
+</li>
+
+<li>
+<a class="dropdown-item"
+asp-controller="Admin"
+asp-action="Turnos">
+Turnos
+</a>
+</li>
+
+<li>
+<a class="dropdown-item"
+asp-controller="Admin"
+asp-action="Usuarios">
+Usuarios
+</a>
+</li>
+
+<li>
+<a class="dropdown-item"
+asp-controller="Admin"
+asp-action="Historial">
+Historial
+</a>
+</li>
+
+</ul>
+
+</li>
+
 }
 
 </ul>
@@ -159,7 +238,7 @@ Mi Agenda
 <li class="nav-item d-flex align-items-center me-3 text-light">
 
 @{
-    var user = await UserManager.GetUserAsync(User);
+var user = await UserManager.GetUserAsync(User);
 }
 
 @if (user != null)
@@ -220,6 +299,7 @@ Registrarse
 </div>
 
 </nav>
+
 
 </header>
 
